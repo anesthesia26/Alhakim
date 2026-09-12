@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentFlow - نظام إدارة الإيجارات السحابي</title>
+    <!-- استدعاء خط Cairo و الأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- استدعاء مكتبات Firebase السحابية -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --whatsapp-color: #25d366;
+            --whatsapp-hover: #16a34a;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* شاشة البداية */
+        #splashScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; color: white; transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .splash-logo { font-size: 3rem; color: #60a5fa; margin-bottom: 10px; }
+        .splash-title { font-size: 2rem; font-weight: 700; margin: 0 0 8px 0; background: linear-gradient(to right, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .splash-developer { background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* نافذة تسجيل الدخول */
+        #authSection {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        #authSection h2 { color: var(--primary-dark); margin-bottom: 20px; font-size: 1.2rem; }
+        .auth-input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-family: 'Cairo'; box-sizing: border-box; }
+        .auth-btn { width: 100%; background: var(--primary-color); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; }
+        .auth-btn:hover { background: var(--primary-dark); }
+        .toggle-auth { margin-top: 15px; font-size: 0.8rem; color: #64748b; cursor: pointer; }
+
+        /* لوحة التحكم الرئيسية */
+        #appContent { display: none; }
+
+        header {
+            text-align: center; margin-bottom: 20px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white; padding: 15px; border-radius: 12px;
+            position: relative;
+        }
+        header h1 { margin: 0 0 6px 0; font-size: 1.3rem; color: #60a5fa; }
+        .developer-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; }
+        .logout-btn { position: absolute; top: 15px; left: 15px; background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; }
+
+        .alerts-section { margin-bottom: 15px; }
+        .alert-card { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+        .alert-danger { background-color: #fef2f2; color: var(--danger-color); border-right: 4px solid var(--danger-color); }
+        .alert-warning { background-color: #fffbeb; color: var(--warning-color); border-right: 4px solid var(--warning-color); }
+
+        .form-card { background: var(--card-bg); padding: 18px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .form-card h2 { margin-top: 0; margin-bottom: 15px; font-size: 1.05rem; color: var(--primary-dark); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 5px; font-size: 0.8rem; font-weight: 600; color: #475569; }
+        .form-group input { padding: 9px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.85rem; background-color: #f8fafc; font-family: 'Cairo'; }
+        .btn-submit { grid-column: 1 / -1; background-color: var(--primary-color); color: white; border: none; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
+
+        .table-container { background: var(--card-bg); border-radius: 12px; overflow-x: auto; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; text-align: right; white-space: nowrap; font-size: 0.85rem; }
+        th, td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
+        th { background-color: #f8fafc; color: #475569; }
+        .badge { padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .badge-due-soon { background-color: #fffbeb; color: var(--warning-color); }
+        .badge-overdue { background-color: #fef2f2; color: var(--danger-color); }
+        .badge-safe { background-color: #ecfdf5; color: var(--success-color); }
+
+        .btn-delete { background: #fee2e2; color: var(--danger-color); border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+        .btn-wa { background: var(--whatsapp-color); color: white; border: none; padding: 6px 10px; border-radius: 5px; text-decoration: none; display: inline-flex; gap: 4px; }
+        
+        .admin-notice { background: #dbeafe; color: #1e40af; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; text-align: center; font-size: 0.85rem; }
+
+        footer { text-align: center; padding: 12px; color: #64748b; font-size: 0.75rem; border-top: 1px solid var(--border-color); }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة البداية -->
+    <div id="splashScreen">
+        <div class="splash-content" style="text-align: center;">
+            <div class="splash-logo"><i class="fa-solid fa-building-shield"></i></div>
+            <h1 class="splash-title">RentFlow</h1>
+            <div class="splash-developer"><i class="fa-solid fa-code"></i> By: Komail Nabeel / B.M.T Of Anesthesia & ICU</div>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول -->
+    <div id="authSection">
+        <h2><i class="fa-solid fa-lock"></i> تسجيل الدخول السحابي</h2>
+        <form id="loginForm">
+            <input type="text" id="loginUser" class="auth-input" placeholder="اسم المستخدم (Username)" required>
+            <input type="password" id="loginPass" class="auth-input" placeholder="كلمة المرور (Password)" required>
+            <button type="submit" class="auth-btn">دخول</button>
+        </form>
+        <div class="toggle-auth" onclick="toggleAuthMode()">ليس لديك حساب؟ اضغط هنا للتسجيل</div>
+    </div>
+
+    <!-- المحتوى الأساسي -->
+    <div id="appContent" class="container">
+        <header>
+            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            <h1><i class="fa-solid fa-building-shield"></i> نظام إدارة الإيجارات</h1>
+            <div class="developer-badge" id="userInfoDisplay"></div>
+        </header>
+
+        <div id="adminBanner"></div>
+        <div id="alertsSection" class="alerts-section"></div>
+
+        <!-- استمارة الإضافة -->
+        <div class="form-card" id="formCardContainer">
+            <h2><i class="fa-solid fa-file-circle-plus"></i> تسجيل عقار جديد لحسابك</h2>
+            <form id="propertyForm" class="form-grid">
+                <div class="form-group">
+                    <label>اسم العقار / المستأجر</label>
+                    <input type="text" id="propName" required placeholder="مثال: شقة 4 - أحمد">
+                </div>
+                <div class="form-group">
+                    <label>الموقع</label>
+                    <input type="text" id="propLocation" required placeholder="مثال: حي الجامعة">
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب (عراقي)</label>
+                    <input type="tel" id="propPhone" required placeholder="07701234567">
+                </div>
+                <div class="form-group">
+                    <label>تاريخ الاستحقاق</label>
+                    <input type="date" id="dueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ (د.ع)</label>
+                    <input type="number" id="propAmount" required placeholder="400000">
+                </div>
+                <button type="submit" class="btn-submit">حفظ العقار سحابياً</button>
+            </form>
+        </div>
+
+        <!-- الجدول -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th id="thOwner" style="display:none;">المالك / اليوزر</th>
+                        <th>اسم العقار</th>
+                        <th>الموقع</th>
+                        <th>الهاتف</th>
+                        <th>الاستحقاق</th>
+                        <th>المبلغ</th>
+                        <th>الحالة</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="propertyTableBody"></tbody>
+            </table>
+        </div>
+
+        <footer>By: Komail Nabeel / B.M.T Of Anesthesia & ICU &copy; 2026</footer>
+    </div>
+
+    <script>
+        // معلومات الـ Firebase المأخوذة من مشروعك
+        const firebaseConfig = {
+            apiKey: "AIzaSyB-Gjt2VYOu1VPyZ04ZqH-VX8djIj8cki0Q",
+            authDomain: "rentflow-eee08.firebaseapp.com",
+            projectId: "rentflow-eee08",
+            storageBucket: "rentflow-eee08.firebasestorage.app",
+            messagingSenderId: "652314883968",
+            appId: "1:652314883968:web:4ddb00185a7e5e5842b365",
+            measurementId: "G-2GPWX6GYBN"
+        };
+
+        // تهيئة فايربيس
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        setTimeout(() => {
+            const splash = document.getElementById('splashScreen');
+            if (splash) { splash.style.opacity = '0'; splash.style.visibility = 'hidden'; }
+        }, 2500);
+
+        const ADMIN_USER = "komail";
+        const ADMIN_PASS = "2026";
+
+        let currentUser = JSON.parse(localStorage.getItem('rent_current_user')) || null;
+
+        const authSection = document.getElementById('authSection');
+        const appContent = document.getElementById('appContent');
+        const loginForm = document.getElementById('loginForm');
+        const propertyForm = document.getElementById('propertyForm');
+        const tableBody = document.getElementById('propertyTableBody');
+        const alertsSection = document.getElementById('alertsSection');
+        const userInfoDisplay = document.getElementById('userInfoDisplay');
+        const adminBanner = document.getElementById('adminBanner');
+        const formCardContainer = document.getElementById('formCardContainer');
+        const thOwner = document.getElementById('thOwner');
+
+        let isRegistering = false;
+
+        function toggleAuthMode() {
+            isRegistering = !isRegistering;
+            const h2 = authSection.querySelector('h2');
+            const btn = authSection.querySelector('.auth-btn');
+            const toggle = authSection.querySelector('.toggle-auth');
+            if (isRegistering) {
+                h2.innerHTML = `<i class="fa-solid fa-user-plus"></i> إنشاء حساب سحابي جديد`;
+                btn.innerText = `تسجيل الحساب`;
+                toggle.innerText = `لديك حساب بالفعل؟ اضغط هنا لدخول`;
+            } else {
+                h2.innerHTML = `<i class="fa-solid fa-lock"></i> تسجيل الدخول السحابي`;
+                btn.innerText = `دخول`;
+                toggle.innerText = `ليس لديك حساب؟ اضغط هنا للتسجيل`;
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+
+            if (u === ADMIN_USER && p === ADMIN_PASS) {
+                currentUser = { username: "Admin (Komail)", isAdmin: true };
+                localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
+                checkAuth();
+                return;
+            }
+
+            try {
+                const usersRef = db.collection('users');
+                if (isRegistering) {
+                    const checkUser = await usersRef.where('username', '==', u).get();
+                    if (!checkUser.empty) {
+                        alert('اسم المستخدم موجود مسبقاً، اختر غيره.');
+                        return;
+                    }
+                    await usersRef.add({ username: u, password: p });
+                    alert('تم إنشاء الحساب السحابي بنجاح!');
+                    toggleAuthMode();
+                } else {
+                    const query = await usersRef.where('username', '==', u).where('password', '==', p).get();
+                    if (!query.empty) {
+                        currentUser = { username: u, isAdmin: false };
+                        localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
+                        checkAuth();
+                    } else {
+                        alert('خطأ في اسم المستخدم أو كلمة المرور!');
+                    }
+                }
+            } catch (error) {
+                alert('حدث خطأ في الاتصال بالإنترنت: ' + error.message);
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('rent_current_user');
+            currentUser = null;
+            authSection.style.display = 'block';
+            appContent.style.display = 'none';
+            loginForm.reset();
+        }
+
+        function checkAuth() {
+            if (currentUser) {
+                authSection.style.display = 'none';
+                appContent.style.display = 'block';
+                userInfoDisplay.innerHTML = `<i class="fa-solid fa-user-shield"></i> مرحباً: ${currentUser.username}`;
+                
+                if (currentUser.isAdmin) {
+                    adminBanner.innerHTML = `<div class="admin-notice"><i class="fa-solid fa-eye"></i> لوحة المدير العامة (Admin): تشاهد عقارات جميع المستخدمين لحظياً من السحابة.</div>`;
+                    formCardContainer.style.display = 'none';
+                    thOwner.style.display = 'table-cell';
+                } else {
+                    adminBanner.innerHTML = '';
+                    formCardContainer.style.display = 'block';
+                    thOwner.style.display = 'none';
+                }
+                loadPropertiesFromCloud();
+            }
+        }
+
+        function formatIraqiPhone(phone) {
+            let cleaned = phone.replace(/\D/g, '');
+            if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
+            if (!cleaned.startsWith('964')) cleaned = '964' + cleaned;
+            return cleaned;
+        }
+
+        function checkDueDateStatus(dueDateStr) {
+            const today = new Date();
+            const dueDate = new Date(dueDateStr);
+            const diffTime = dueDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) return { status: `متأخر (${Math.abs(diffDays)} يوم)`, class: 'badge-overdue', alertType: 'danger', icon: 'fa-triangle-exclamation' };
+            if (diffDays <= 5) return { status: `قريب (${diffDays} يوم)`, class: 'badge-due-soon', alertType: 'warning', icon: 'fa-clock' };
+            return { status: 'سليم', class: 'badge-safe', alertType: null, icon: 'fa-circle-check' };
+        }
+
+        propertyForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const newProperty = {
+                owner: currentUser.username,
+                propName: document.getElementById('propName').value,
+                location: document.getElementById('propLocation').value,
+                phone: document.getElementById('propPhone').value,
+                dueDate: document.getElementById('dueDate').value,
+                amount: document.getElementById('propAmount').value,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                await db.collection('properties').add(newProperty);
+                alert('تم حفظ العقار في السحابة بنجاح!');
+                propertyForm.reset();
+                loadPropertiesFromCloud();
+            } catch (error) {
+                alert('فشل حفظ العقار: ' + error.message);
+            }
+        });
+
+        window.deleteProperty = async function(docId) {
+            if (confirm('هل أنت متأكد من الحذف؟')) {
+                try {
+                    await db.collection('properties').doc(docId).delete();
+                    loadPropertiesFromCloud();
+                } catch (error) {
+                    alert('فشل الحذف: ' + error.message);
+                }
+            }
+        };
+
+        function loadPropertiesFromCloud() {
+            tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 20px;">جاري جلب البيانات من السحابة...</td></tr>`;
+            alertsSection.innerHTML = '';
+
+            db.collection('properties').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+                tableBody.innerHTML = '';
+                alertsSection.innerHTML = '';
+                
+                let allProps = [];
+                snapshot.forEach((doc) => {
+                    allProps.push({ id: doc.id, ...doc.data() });
+                });
+
+                let displayedList = currentUser.isAdmin ? allProps : allProps.filter(p => p.owner === currentUser.username);
+
+                if (displayedList.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #64748b; padding: 20px;">لا توجد عقارات مسجلة.</td></tr>`;
+                    return;
+                }
+
+                displayedList.forEach((prop, realIndex) => {
+                    const check = checkDueDateStatus(prop.dueDate);
+                    const serialNumber = realIndex + 1;
+                    const formattedPhone = formatIraqiPhone(prop.phone);
+
+                    if (currentUser.isAdmin && check.alertType) {
+                        const alertDiv = document.createElement('div');
+                        alertDiv.className = `alert-card alert-${check.alertType}`;
+                        alertDiv.innerHTML = `<span>تنبيه عقار (${prop.propName}) للمستخدم [${prop.owner}] موعده قرب!</span>`;
+                        alertsSection.appendChild(alertDiv);
+                    }
+
+                    const tableWaText = encodeURIComponent(`مرحباً (${prop.propName})\nتذكير بسداد إيجار العقار في (${prop.location}). المبلغ: ${prop.amount} د.ع، الاستحقاق: ${prop.dueDate}.`);
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>#${serialNumber}</strong></td>
+                        ${currentUser.isAdmin ? `<td><span style="color:var(--primary-color); font-weight:bold;">${prop.owner}</span></td>` : ''}
+                        <td>${prop.propName}</td>
+                        <td>${prop.location}</td>
+                        <td><bdi dir="ltr">${prop.phone}</bdi></td>
+                        <td>${prop.dueDate}</td>
+                        <td>${Number(prop.amount).toLocaleString()} د.ع</td>
+                        <td><span class="badge ${check.class}"><i class="fa-solid ${check.icon}"></i> ${check.status}</span></td>
+                        <td>
+                            <div style="display:flex; gap:5px;">
+                                <a href="https://api.whatsapp.com/send?phone=${formattedPhone}&text=${tableWaText}" target="_blank" class="btn-wa"><i class="fa-brands fa-whatsapp"></i></a>
+                                <button class="btn-delete" onclick="deleteProperty('${prop.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            });
+        }
+
+        if (currentUser) {
+            checkAuth();
+        }
+    </script>
+</body>
+</html>
