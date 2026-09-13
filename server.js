@@ -3,13 +3,11 @@ const { getFirestore } = require('firebase-admin/firestore');
 const axios = require('axios');
 const http = require('http');
 
-// تهيئة الاتصال باستخدام متغيرات البيئة بأمان تام
+// قراءة ملف الأمان بصورة آمنة ومباشرة
+const serviceAccount = require('./serviceAccountKey.json');
+
 initializeApp({
-  credential: cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
-  })
+  credential: cert(serviceAccount)
 });
 
 const db = getFirestore();
