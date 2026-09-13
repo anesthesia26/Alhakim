@@ -1,6 +1,7 @@
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const axios = require('axios');
+const http = require('http'); // أضفناه حتى يظل السيرفر مستقر ومنفتح
 const serviceAccount = require('./serviceAccountKey.json');
 
 initializeApp({
@@ -9,8 +10,19 @@ initializeApp({
 
 const db = getFirestore();
 
-const TELEGRAM_BOT_TOKEN ='8883989010:AAEarEp4iN5DgZ2WRjSuMPX8ipOKTDiepCE';
+const TELEGRAM_BOT_TOKEN = '8883989010:AAEarEp4iN5DgZ2WRjSuMPX8ipOKTDiepCE';
 const TELEGRAM_CHAT_ID = '7968022913';
+
+// إنشاء سيرفر ويب بسيط حتى يرضى Railway ويستمر بالعمل
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('RentFlow Bot is running successfully!\n');
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+});
 
 async function checkRentDeadlines() {
     try {
@@ -23,6 +35,8 @@ async function checkRentDeadlines() {
 
         snapshot.forEach(doc => {
             const prop = doc.data();
+            if (!prop.dueDate) return;
+            
             const dueDate = new Date(prop.dueDate);
             dueDate.setHours(0, 0, 0, 0);
 
@@ -39,11 +53,11 @@ async function checkRentDeadlines() {
 
                 const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(`مرحباً (${prop.propName || 'عزيزي'})\nتذكير بسداد إيجار العقار (${prop.location || ''}). المبلغ: ${prop.amount || 0} د.ع`)}`;
 
-                alertsMessage += `📌 *العقار:* ${prop.propName}\n`;
-                alertsMessage += `👤 *المستخدم:* ${prop.owner}\n`;
+                alertsMessage += `📌 *العقار:* ${prop.propName || 'بدون اسم'}\n`;
+                alertsMessage += `👤 *المستأجر/المالك:* ${prop.owner || 'غير محدد'}\n`;
                 alertsMessage += `📅 *الحالة:* ${statusText}\n`;
-                alertsMessage += `💰 *المبلغ:* ${prop.amount} د.ع\n`;
-                alertsMessage += `🔗 [مراسلة المستأجر عبر واتساب](${waLink})\n`;
+                alertsMessage += `💰 *المبلغ:* ${prop.amount || 0} د.ع\n`;
+                alertsMessage += `🔗 [مراسلة عبر واتساب](${waLink})\n`;
                 alertsMessage += `-----------------------------------\n`;
             }
         });
