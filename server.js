@@ -9,7 +9,7 @@ initializeApp({
 
 const db = getFirestore();
 
-const TELEGRAM_BOT_TOKEN = '8883989010:AAEarEp4iN5DgZ2WRjSuMPX8ipOKTDiepCE';
+const TELEGRAM_BOT_TOKEN ='8883989010:AAEarEp4iN5DgZ2WRjSuMPX8ipOKTDiepCE';
 const TELEGRAM_CHAT_ID = '7968022913';
 
 async function checkRentDeadlines() {
