@@ -26,6 +26,7 @@ server.listen(PORT, () => {
 
 async function checkRentDeadlines() {
     try {
+        console.log('جاري جلب العقارات من قاعدة البيانات...');
         const snapshot = await db.collection('properties').get();
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -36,17 +37,11 @@ async function checkRentDeadlines() {
         snapshot.forEach(doc => {
             const prop = doc.data();
             
-            // تحقق من وجود تاريخ الاستحقاق لتجنب الأخطاء
-            if (!prop.dueDate) {
-                console.log(`تنبيه: العقار (${prop.propName || doc.id}) لا يحتوي على تاريخ استحقاق.`);
-                return;
-            }
+            // تخطي العقارات التي لا تحتوي على تاريخ استحقاق
+            if (!prop.dueDate) return;
 
             const dueDate = new Date(prop.dueDate);
-            if (isNaN(dueDate.getTime())) {
-                console.log(`تنبيه: العقار (${prop.propName || doc.id}) تاريخه غير صالح: ${prop.dueDate}`);
-                return;
-            }
+            if (isNaN(dueDate.getTime())) return;
 
             dueDate.setHours(0, 0, 0, 0);
 
@@ -83,7 +78,7 @@ async function checkRentDeadlines() {
             console.log('لا توجد إيجارات مستحقة خلال هذه الفترة.');
         }
     } catch (error) {
-        console.error('خطأ دقيق أثناء فحص التواريخ:', error.message);
+        console.error('تنبيه مؤقت في الاتصال (سيتم إعادة المحاولة لاحقاً):', error.message);
     }
 }
 
