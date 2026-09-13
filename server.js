@@ -1,7 +1,7 @@
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const axios = require('axios');
-const http = require('http'); // أضفناه حتى يظل السيرفر مستقر ومنفتح
+const http = require('http');
 const serviceAccount = require('./serviceAccountKey.json');
 
 initializeApp({
@@ -13,7 +13,7 @@ const db = getFirestore();
 const TELEGRAM_BOT_TOKEN = '8883989010:AAEarEp4iN5DgZ2WRjSuMPX8ipOKTDiepCE';
 const TELEGRAM_CHAT_ID = '7968022913';
 
-// إنشاء سيرفر ويب بسيط حتى يرضى Railway ويستمر بالعمل
+// إنشاء سيرفر ويب بسيط لاستقرار Railway
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.end('RentFlow Bot is running successfully!\n');
@@ -35,9 +35,19 @@ async function checkRentDeadlines() {
 
         snapshot.forEach(doc => {
             const prop = doc.data();
-            if (!prop.dueDate) return;
             
+            // تحقق من وجود تاريخ الاستحقاق لتجنب الأخطاء
+            if (!prop.dueDate) {
+                console.log(`تنبيه: العقار (${prop.propName || doc.id}) لا يحتوي على تاريخ استحقاق.`);
+                return;
+            }
+
             const dueDate = new Date(prop.dueDate);
+            if (isNaN(dueDate.getTime())) {
+                console.log(`تنبيه: العقار (${prop.propName || doc.id}) تاريخه غير صالح: ${prop.dueDate}`);
+                return;
+            }
+
             dueDate.setHours(0, 0, 0, 0);
 
             const diffTime = dueDate - today;
@@ -47,7 +57,7 @@ async function checkRentDeadlines() {
                 hasAlerts = true;
                 let statusText = diffDays < 0 ? `متأخر ${Math.abs(diffDays)} يوم` : `متبقي ${diffDays} يوم`;
                 
-                let phone = prop.phone ? prop.phone.replace(/\D/g, '') : '';
+                let phone = prop.phone ? String(prop.phone).replace(/\D/g, '') : '';
                 if (phone.startsWith('0')) phone = phone.substring(1);
                 if (!phone.startsWith('964')) phone = '964' + phone;
 
@@ -73,7 +83,7 @@ async function checkRentDeadlines() {
             console.log('لا توجد إيجارات مستحقة خلال هذه الفترة.');
         }
     } catch (error) {
-        console.error('خطأ أثناء فحص التواريخ:', error);
+        console.error('خطأ دقيق أثناء فحص التواريخ:', error.message);
     }
 }
 
