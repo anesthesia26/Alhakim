@@ -10,12 +10,6 @@ initializeApp({
 
 const db = getFirestore();
 
-// زيادة وقت الانتظار لقاعدة البيانات لتجنب خطأ المهلة (Timeout)
-db.settings({
-  ignoreUndefinedProperties: true,
-  maxRetries: 3
-});
-
 const TELEGRAM_BOT_TOKEN = '8883989010:AAEarEp4iN5DgZ2WRjSuMPX8ipOKTDiepCE';
 const TELEGRAM_CHAT_ID = '7968022913';
 
@@ -32,13 +26,15 @@ server.listen(PORT, () => {
 
 async function checkRentDeadlines() {
     try {
-        console.log('جاري الاتصال بقاعدة البيانات وفحص العقارات...');
+        console.log('جاري جلب البيانات من قاعدة البيانات...');
         
-        // استخدام جلب البيانات مع تحديد مهلة أمان
-        const snapshot = await Promise.race([
-            db.collection('properties').get(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('قاعدة البيانات بطيئة بالاستجابة')), 15000))
-        ]);
+        // جلب المستندات بطلب بسيط ومباشر
+        const snapshot = await db.collection('properties').get();
+        
+        if (snapshot.empty) {
+            console.log('قاعدة البيانات فارغة ولا توجد عقارات مسجلة.');
+            return;
+        }
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -59,9 +55,10 @@ async function checkRentDeadlines() {
             const diffTime = dueDate - today;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
+            // للاختبار والتأكد: إذا تريد تفحص كل العقارات حتى لو بعيدة، ارفع الرقم أو خليه <= 5
             if (diffDays <= 5) {
                 hasAlerts = true;
-                let statusText = diffDays < 0 ? `متأخر ${Math.abs(diffDays)} يوم` : `متبقي ${diffDays} يوم`;
+                let statusText = diffDays < 0 ? `متأخر ${Math.abs(diffDays)} يوم` : (diffDays === 0 ? `مستحق اليوم!` : `متبقي ${diffDays} يوم`);
                 
                 let phone = prop.phone ? String(prop.phone).replace(/\D/g, '') : '';
                 if (phone.startsWith('0')) phone = phone.substring(1);
@@ -70,7 +67,7 @@ async function checkRentDeadlines() {
                 const waLink = `https://wa.me/${phone}?text=${encodeURIComponent(`مرحباً (${prop.propName || 'عزيزي'})\nتذكير بسداد إيجار العقار (${prop.location || ''}). المبلغ: ${prop.amount || 0} د.ع`)}`;
 
                 alertsMessage += `📌 *العقار:* ${prop.propName || 'بدون اسم'}\n`;
-                alertsMessage += `👤 *المستأجر/المالك:* ${prop.owner || 'غير محدد'}\n`;
+                alertsMessage += `👤 *المستأجر:* ${prop.owner || 'غير محدد'}\n`;
                 alertsMessage += `📅 *الحالة:* ${statusText}\n`;
                 alertsMessage += `💰 *المبلغ:* ${prop.amount || 0} د.ع\n`;
                 alertsMessage += `🔗 [مراسلة عبر واتساب](${waLink})\n`;
@@ -86,10 +83,10 @@ async function checkRentDeadlines() {
             });
             console.log('تم إرسال التنبيهات إلى تلغرام بنجاح.');
         } else {
-            console.log('لا توجد إيجارات مستحقة خلال هذه الفترة، وتم الفحص بنجاح.');
+            console.log('تم الفحص بنجاح: لا توجد تواريخ إيجار مستحقة خلال الـ 5 أيام القادمة.');
         }
     } catch (error) {
-        console.error('خطأ أثناء جلب البيانات:', error.message);
+        console.error('خطأ بسيط أثناء جلب العقارات:', error.message);
     }
 }
 
