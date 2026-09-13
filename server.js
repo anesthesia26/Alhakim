@@ -10,6 +10,12 @@ initializeApp({
 
 const db = getFirestore();
 
+// زيادة وقت الانتظار لقاعدة البيانات لتجنب خطأ المهلة (Timeout)
+db.settings({
+  ignoreUndefinedProperties: true,
+  maxRetries: 3
+});
+
 const TELEGRAM_BOT_TOKEN = '8883989010:AAEarEp4iN5DgZ2WRjSuMPX8ipOKTDiepCE';
 const TELEGRAM_CHAT_ID = '7968022913';
 
@@ -26,8 +32,14 @@ server.listen(PORT, () => {
 
 async function checkRentDeadlines() {
     try {
-        console.log('جاري جلب العقارات من قاعدة البيانات...');
-        const snapshot = await db.collection('properties').get();
+        console.log('جاري الاتصال بقاعدة البيانات وفحص العقارات...');
+        
+        // استخدام جلب البيانات مع تحديد مهلة أمان
+        const snapshot = await Promise.race([
+            db.collection('properties').get(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('قاعدة البيانات بطيئة بالاستجابة')), 15000))
+        ]);
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -37,7 +49,6 @@ async function checkRentDeadlines() {
         snapshot.forEach(doc => {
             const prop = doc.data();
             
-            // تخطي العقارات التي لا تحتوي على تاريخ استحقاق
             if (!prop.dueDate) return;
 
             const dueDate = new Date(prop.dueDate);
@@ -75,10 +86,10 @@ async function checkRentDeadlines() {
             });
             console.log('تم إرسال التنبيهات إلى تلغرام بنجاح.');
         } else {
-            console.log('لا توجد إيجارات مستحقة خلال هذه الفترة.');
+            console.log('لا توجد إيجارات مستحقة خلال هذه الفترة، وتم الفحص بنجاح.');
         }
     } catch (error) {
-        console.error('تنبيه مؤقت في الاتصال (سيتم إعادة المحاولة لاحقاً):', error.message);
+        console.error('خطأ أثناء جلب البيانات:', error.message);
     }
 }
 
