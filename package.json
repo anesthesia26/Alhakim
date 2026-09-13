@@ -1,14 +1,13 @@
 {
-  "name": "rentflow",
+  "name": "rentflow-bot",
   "version": "1.0.0",
-  "description": "Rent deadlines monitor bot",
+  "description": "Rent due dates bot",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "axios": "^1.6.0",
-    "firebase-admin": "^11.0.0",
-    "node-cron": "^3.0.3"
+    "firebase-admin": "^12.0.0"
   }
 }
