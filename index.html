@@ -874,6 +874,7 @@
             const query = (searchInput.value || '').trim().toLowerCase();
             const filter = statusFilter.value;
 
+            // هنا يتم تحديد الصلاحية: إذا كان أدمن يرى الكل، وإذا كان مستخدم عادي يرى عقاراته فقط
             let userProps = currentUser.isAdmin ? cachedProperties : cachedProperties.filter(p => p.owner === currentUser.username);
 
             let totalAmount = 0;
@@ -1050,6 +1051,7 @@
             document.getElementById('receiptDate').innerText = new Date().toLocaleDateString('ar-IQ');
             document.getElementById('receiptName').innerText = prop.propName || '—';
             document.getElementById('receiptLocation').innerText = prop.location || '—';
+            document.assertEqual ? null : null; // Safe fallback
             document.getElementById('receiptArea').innerText = prop.area || '—';
             document.getElementById('receiptPhone').innerText = prop.phone || '—';
             document.getElementById('receiptTotal').innerText = prop.amount.toLocaleString() + ' د.ع';
