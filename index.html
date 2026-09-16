@@ -89,7 +89,7 @@
         .admin-notice { background: #dbeafe; color: #1e40af; padding: 12px; border-radius: 10px; margin-bottom: 18px; font-weight: 700; text-align: center; font-size: 0.9rem; border: 1px solid #bfdbfe; }
         
         /* لوحة المطور الخاصة بك */
-        .dev-panel { background: #fef3c7; border: 2px dashed #f59e0b; padding: 20px; border-radius: 14px; margin-bottom: 20px; text-align: center; }
+        .dev-panel { background: #fef3c7; border: 2px dashed #f59e0b; padding: 25px; border-radius: 14px; margin: 40px auto; max-width: 600px; text-align: center; }
         .dev-panel h3 { color: #b45309; margin-top: 0; }
 
         /* بطاقات الإحصائيات */
@@ -372,36 +372,24 @@
             <input type="password" id="loginPass" class="auth-input" placeholder="كلمة المرور (Password)" required>
             <button type="submit" class="auth-btn">دخول</button>
         </form>
-        <div class="toggle-auth" onclick="openDevLogin()" style="margin-top:15px; font-size:0.8rem; color:#64748b; cursor:pointer;">🔒 دخول المطور (لتجديد اشتراك الشركة)</div>
     </div>
 
-    <!-- نافذة تسجيل دخول المطور الخاصة بك -->
-    <div id="devModal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 380px;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-key"></i> لوحة تحكم المطور (الخاصة بك)</h3>
-                <button class="modal-close" onclick="closeDevModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p style="font-size: 0.85rem; color:#64748b;">من هنا يمكنك تجديد اشتراك نظام الشركة الشهري (20$) ليعمل التطبيق لديهم من جديد.</p>
-            <form id="devLoginForm">
-                <input type="password" id="devPassInput" class="auth-input" placeholder="كلمة سر المطور الخاصة بك" required>
-                <button type="submit" class="auth-btn" style="background:#d97706;">فتح لوحة المطور والتجديد</button>
-            </form>
-        </div>
-    </div>
+    <!-- لوحة تحكم المطور (تظهر لك فقط عند إدخال حسابك komail / 2004) -->
+    <div id="devPanelScreen" class="container" style="display:none;">
+        <header>
+            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            <h1><i class="fa-solid fa-code"></i> لوحة تحكم المطور (تجديد اشتراك الشركة)</h1>
+            <div class="developer-badge">By: Komail Nabeel</div>
+        </header>
 
-    <!-- واجهة المطور لتجديد الاشتراك للشركة -->
-    <div id="devPanelScreen" class="container" style="display:none; max-width:600px; margin-top:50px;">
         <div class="dev-panel">
             <h3><i class="fa-solid fa-file-invoice-dollar"></i> إدارة اشتراك نظام شركة RentFlow (20$ / شهرياً)</h3>
             <p id="devSubStatusText" style="font-weight: bold; margin: 15px 0;"></p>
-            <button onclick="extendCompanySubscription()" class="auth-btn" style="background:#10b981; padding:14px; font-size:1rem;"><i class="fa-solid fa-calendar-check"></i> تجديد اشتراك الشركة شهراً إضافياً (دفع 20$)</button>
-            <br><br>
-            <button onclick="devLogout()" class="auth-btn" style="background:#64748b;">تسجيل خروج من لوحة المطور</button>
+            <button onclick="extendCompanySubscription()" class="auth-btn" style="background:#10b981; padding:14px; font-size:1rem; max-width:400px; margin:0 auto;"><i class="fa-solid fa-calendar-check"></i> تجديد اشتراك الشركة شهراً إضافياً (دفع 20$)</button>
         </div>
     </div>
 
-    <!-- المحتوى الأساسي للشركة -->
+    <!-- المحتوى الأساسي للشركة (مدير الشركة nabeel والمشتركين) -->
     <div id="appContent" class="container">
         <header>
             <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
@@ -672,9 +660,12 @@
             if (splash) { splash.style.opacity = '0'; splash.style.visibility = 'hidden'; }
         }, 1500);
 
+        // بيانات الدخول الرسمية
+        const DEV_USER = "komail";
+        const DEV_PASS = "2004";
+
         const ADMIN_USER = "nabeel";
         const ADMIN_PASS = "1973";
-        const DEV_SECRET_PASS = "dev999"; 
 
         let currentUser = JSON.parse(localStorage.getItem('rent_current_user')) || null;
         let cachedProperties = [];
@@ -682,6 +673,7 @@
 
         const authSection = document.getElementById('authSection');
         const appContent = document.getElementById('appContent');
+        const devPanelScreen = document.getElementById('devPanelScreen');
         const loginForm = document.getElementById('loginForm');
         const propertyForm = document.getElementById('propertyForm');
         const editPropertyForm = document.getElementById('editPropertyForm');
@@ -695,9 +687,6 @@
         const printReceiptModal = document.getElementById('printReceiptModal');
         const searchInput = document.getElementById('searchInput');
         const statusFilter = document.getElementById('statusFilter');
-
-        const devModal = document.getElementById('devModal');
-        const devPanelScreen = document.getElementById('devPanelScreen');
         const devSubStatusText = document.getElementById('devSubStatusText');
         const systemLockedAlert = document.getElementById('systemLockedAlert');
 
@@ -706,7 +695,6 @@
                 const docRef = db.collection('settings').doc('company_subscription');
                 const docSnap = await docRef.get();
                 if (!docSnap.exists) {
-                    // إذا لم يكن المستند موجوداً، ننشئه تلقائياً بتاريخ ساري لضمان عدم توقف النظام
                     const defaultDate = "2026-12-31";
                     await docRef.set({ expiryDate: defaultDate });
                     return { locked: false };
@@ -725,7 +713,6 @@
                 systemLockedAlert.style.display = 'none';
                 return { locked: false };
             } catch (err) {
-                console.error(err);
                 return { locked: false };
             }
         }
@@ -736,14 +723,24 @@
             e.preventDefault();
             
             const subCheck = await checkSystemSubscription();
-            if (subCheck.locked) {
-                alert('❌ النظام متوقف مؤقتاً لانتهاء اشتراك الشركة الشهري (20$). يرجى إبلاغ المطور للتجديد.');
-                return;
-            }
-
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
 
+            // دخول المطور (أنت)
+            if (u === DEV_USER && p === DEV_PASS) {
+                currentUser = { username: "المطور (Komail)", isDev: true };
+                localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
+                checkAuth();
+                return;
+            }
+
+            // إذا كان الاشتراك منتهي، يمنع دخول مدير الشركة أو المستخدمين العاديين فقط، بينما المطور يدخل ليجدد
+            if (subCheck.locked) {
+                alert('❌ النظام متوقف مؤقتاً لانتهاء اشتراك الشركة الشهري (20$). يرجى التجديد.');
+                return;
+            }
+
+            // دخول مدير الشركة (Nabeel)
             if (u === ADMIN_USER && p === ADMIN_PASS) {
                 currentUser = { username: "مدير الشركة (Nabeel)", isAdmin: true };
                 localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
@@ -763,26 +760,6 @@
                 }
             } catch (error) {
                 alert('حدث خطأ في الاتصال: ' + error.message);
-            }
-        });
-
-        window.openDevLogin = function() {
-            devModal.style.display = 'flex';
-        }
-        window.closeDevModal = function() {
-            devModal.style.display = 'none';
-        }
-
-        document.getElementById('devLoginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const pass = document.getElementById('devPassInput').value.trim();
-            if (pass === DEV_SECRET_PASS) {
-                closeDevModal();
-                authSection.style.display = 'none';
-                devPanelScreen.style.display = 'block';
-                loadDevSubscriptionInfo();
-            } else {
-                alert('كلمة سر المطور غير صحيحة!');
             }
         });
 
@@ -834,24 +811,19 @@
             }
         }
 
-        window.devLogout = function() {
-            devPanelScreen.style.display = 'none';
-            authSection.style.display = 'block';
-            document.getElementById('devLoginForm').reset();
-        }
-
         function logout() {
             localStorage.removeItem('rent_current_user');
             currentUser = null;
             authSection.style.display = 'block';
             appContent.style.display = 'none';
+            devPanelScreen.style.display = 'none';
             loginForm.reset();
             checkSystemSubscription();
         }
 
         async function checkAuth() {
             const subCheck = await checkSystemSubscription();
-            if (subCheck.locked) {
+            if (subCheck.locked && currentUser && !currentUser.isDev) {
                 alert('❌ تم إيقاف النظام لانتهاء الاشتراك الشهري (20$).');
                 logout();
                 return;
@@ -859,6 +831,13 @@
 
             if (currentUser) {
                 authSection.style.display = 'none';
+                
+                if (currentUser.isDev) {
+                    devPanelScreen.style.display = 'block';
+                    loadDevSubscriptionInfo();
+                    return;
+                }
+
                 appContent.style.display = 'block';
                 userInfoDisplay.innerHTML = `<i class="fa-solid fa-user-shield"></i> مرحباً: ${currentUser.username}`;
                 
@@ -1219,7 +1198,7 @@
         });
 
         window.quickRenewMonth = async function(propId) {
-            const prop = cachedProperties.path ? null : cachedProperties.find(p => p.id === propId);
+            const prop = cachedProperties.find(p => p.id === propId);
             if (!prop) return;
 
             if (confirm(`هل ترغب في تسجيل سداد كامل لعقار (${prop.propName}) وتجديد تاريخ الاستحقاق شهراً للأمام؟`)) {
