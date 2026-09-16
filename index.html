@@ -21,14 +21,13 @@
             --success-color: #10b981;
             --warning-color: #f59e0b;
             --danger-color: #ef4444;
-            --info-color: #06b6d4;
             --whatsapp-color: #25d366;
             --whatsapp-hover: #16a34a;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-            --muted-color: #64748b;
-            --border-color: #e2e8f0;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --muted-color: #94a3b8;
+            --border-color: #334155;
         }
 
         * { box-sizing: border-box; }
@@ -61,19 +60,19 @@
             background: var(--card-bg);
             padding: 30px;
             border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
             max-width: 420px;
             margin: 60px auto;
             text-align: center;
             border: 1px solid var(--border-color);
             display: block;
         }
-        #authSection h2 { color: var(--primary-dark); margin-bottom: 20px; font-size: 1.3rem; }
-        .auth-input { width: 100%; padding: 11px; margin-bottom: 14px; border: 1px solid var(--border-color); border-radius: 8px; font-family: 'Cairo'; font-size: 0.9rem; }
+        #authSection h2 { color: #60a5fa; margin-bottom: 20px; font-size: 1.3rem; }
+        .auth-input { width: 100%; padding: 11px; margin-bottom: 14px; border: 1px solid var(--border-color); border-radius: 8px; font-family: 'Cairo'; font-size: 0.9rem; background: #0f172a; color: white; }
         .auth-btn { width: 100%; background: var(--primary-color); color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; font-size: 0.95rem; transition: 0.2s; }
         .auth-btn:hover { background: var(--primary-dark); }
 
-        /* لوحة التحكم الرئيسية */
+        /* لوحات التحكم الرئيسية */
         #appContent { display: none; }
         #devPanelScreen { display: none; }
 
@@ -81,25 +80,61 @@
             text-align: center; margin-bottom: 20px;
             background: linear-gradient(135deg, #1e293b, #334155);
             color: white; padding: 20px; border-radius: 16px;
-            position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
         }
         header h1 { margin: 0 0 8px 0; font-size: 1.4rem; color: #60a5fa; }
-        .developer-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1); padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; }
+        .developer-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.05); padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; }
         .logout-btn { position: absolute; top: 18px; left: 18px; background: #ef4444; color: white; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: 'Cairo'; }
         .logout-btn:hover { background: #dc2626; }
 
-        .admin-notice { background: #dbeafe; color: #1e40af; padding: 12px; border-radius: 10px; margin-bottom: 18px; font-weight: 700; text-align: center; font-size: 0.9rem; border: 1px solid #bfdbfe; }
+        .admin-notice { background: #1e3a8a; color: #93c5fd; padding: 12px; border-radius: 10px; margin-bottom: 18px; font-weight: 700; text-align: center; font-size: 0.9rem; border: 1px solid #3b82f6; }
         
-        .admin-panel-card { background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px; border-radius: 14px; margin-bottom: 20px; }
-        .admin-panel-card h3 { margin-top: 0; color: #1e40af; font-size: 1.05rem; border-bottom: 1px solid #bfdbfe; padding-bottom: 8px; }
+        .admin-panel-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 20px; }
+        .admin-panel-card h3 { margin-top: 0; color: #60a5fa; font-size: 1.05rem; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
 
-        .subscription-banner { background: #fffbeb; border: 1px solid #fde68a; color: #b45309; padding: 12px 16px; border-radius: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem; flex-wrap: wrap; gap: 10px; }
-        .wa-renew-btn { background: var(--whatsapp-color); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; display: none; align-items: center; gap: 5px; font-weight: bold; transition: 0.2s; }
+        /* شريط الاشتراكات المطابق للصور */
+        .subscription-banner { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            color: #f8fafc; 
+            padding: 16px 20px; 
+            border-radius: 14px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .sub-status-line { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .sub-status-line span { color: #38bdf8; }
+        .sub-time-line { font-size: 1rem; font-weight: 600; color: #38bdf8; line-height: 1.6; }
+        .wa-renew-box { margin-top: 10px; display: none; }
+        .wa-renew-btn { background: var(--whatsapp-color); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; font-weight: bold; }
         .wa-renew-btn:hover { background: var(--whatsapp-hover); }
 
-        .dev-panel { background: #fef3c7; border: 2px dashed #f59e0b; padding: 25px; border-radius: 14px; margin: 40px auto; max-width: 600px; text-align: center; }
-        .dev-panel h3 { color: #b45309; margin-top: 0; }
+        /* لوحة تحكم المطور المطابقة للصورة الثانية والثالثة */
+        .dev-panel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 16px;
+            max-width: 600px;
+            margin: 20px auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .dev-panel-card h2 { color: #60a5fa; margin-top: 0; font-size: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .dev-panel-card p { color: var(--muted-color); font-size: 0.85rem; margin-bottom: 20px; }
+        .dev-group { margin-bottom: 16px; display: flex; flex-direction: column; text-align: right; }
+        .dev-group label { margin-bottom: 6px; font-weight: 700; font-size: 0.85rem; color: #cbd5e1; }
+        .dev-group select, .dev-group input {
+            padding: 11px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #0f172a;
+            color: white;
+            font-family: 'Cairo';
+            font-size: 0.9rem;
+        }
 
+        /* بطاقات الإحصائيات */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -114,7 +149,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .stat-icon {
             width: 48px;
@@ -125,12 +160,12 @@
             justify-content: center;
             font-size: 1.3rem;
         }
-        .stat-icon.blue { background: #eff6ff; color: #2563eb; }
-        .stat-icon.green { background: #ecfdf5; color: #059669; }
-        .stat-icon.red { background: #fef2f2; color: #dc2626; }
-        .stat-icon.amber { background: #fffbeb; color: #d97706; }
+        .stat-icon.blue { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+        .stat-icon.green { background: rgba(5, 150, 105, 0.15); color: #34d399; }
+        .stat-icon.red { background: rgba(220, 38, 38, 0.15); color: #f87171; }
+        .stat-icon.amber { background: rgba(217, 119, 6, 0.15); color: #fbbf24; }
         .stat-info h3 { margin: 0; font-size: 0.8rem; color: var(--muted-color); }
-        .stat-info p { margin: 4px 0 0 0; font-size: 1.15rem; font-weight: 800; }
+        .stat-info p { margin: 4px 0 0 0; font-size: 1.15rem; font-weight: 800; color: white; }
 
         .dashboard-row {
             display: grid;
@@ -152,32 +187,31 @@
             justify-content: center;
             min-height: 260px;
         }
-        .chart-card h3 { margin: 0 0 14px 0; font-size: 0.95rem; color: var(--primary-dark); width: 100%; text-align: right; }
+        .chart-card h3 { margin: 0 0 14px 0; font-size: 0.95rem; color: #60a5fa; width: 100%; text-align: right; }
         .chart-wrapper { width: 100%; max-width: 280px; height: 200px; position: relative; }
 
         .alerts-section { margin-bottom: 16px; }
         .alert-card { padding: 11px 16px; border-radius: 10px; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
-        .alert-danger { background-color: #fef2f2; color: var(--danger-color); border-right: 5px solid var(--danger-color); }
-        .alert-warning { background-color: #fffbeb; color: var(--warning-color); border-right: 5px solid var(--warning-color); }
+        .alert-danger { background-color: rgba(239, 68, 68, 0.15); color: #f87171; border-right: 5px solid var(--danger-color); }
+        .alert-warning { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; border-right: 5px solid var(--warning-color); }
 
-        .form-card { background: var(--card-bg); padding: 20px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .form-card h2 { margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; color: var(--primary-dark); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .form-card { background: var(--card-bg); padding: 20px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-card h2 { margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; color: #60a5fa; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
         .form-group { display: flex; flex-direction: column; }
-        .form-group label { margin-bottom: 6px; font-size: 0.8rem; font-weight: 700; color: #475569; }
+        .form-group label { margin-bottom: 6px; font-size: 0.8rem; font-weight: 700; color: #cbd5e1; }
         .form-group input, .form-group select, .form-group textarea {
             padding: 9px 12px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 0.85rem;
-            background-color: #f8fafc;
+            background-color: #0f172a;
             font-family: 'Cairo';
-            color: var(--text-color);
+            color: white;
         }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
             outline: none;
             border-color: var(--primary-color);
-            background-color: #fff;
         }
         .btn-submit { grid-column: 1 / -1; background-color: var(--primary-color); color: white; border: none; padding: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-size: 0.95rem; transition: 0.2s; }
         .btn-submit:hover { background-color: var(--primary-dark); }
@@ -212,6 +246,8 @@
             border-radius: 8px;
             font-family: 'Cairo';
             font-size: 0.85rem;
+            background: #0f172a;
+            color: white;
         }
         .filter-select {
             flex: 1;
@@ -221,31 +257,32 @@
             border-radius: 8px;
             font-family: 'Cairo';
             font-size: 0.85rem;
-            background: #f8fafc;
+            background: #0f172a;
+            color: white;
         }
 
-        .table-container { background: var(--card-bg); border-radius: 14px; overflow-x: auto; border: 1px solid var(--border-color); margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        table { width: 100%; border-collapse: collapse; text-align: right; white-space: nowrap; font-size: 0.85rem; }
+        .table-container { background: var(--card-bg); border-radius: 14px; overflow-x: auto; border: 1px solid var(--border-color); margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; text-align: right; white-space: nowrap; font-size: 0.85rem; color: #f8fafc; }
         th, td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
-        th { background-color: #f8fafc; color: #475569; font-weight: 700; }
-        tr:hover { background-color: #f1f5f9; }
+        th { background-color: #0f172a; color: #94a3b8; font-weight: 700; }
+        tr:hover { background-color: rgba(255,255,255,0.02); }
         
         .badge { padding: 4px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
-        .badge-due-soon { background-color: #fffbeb; color: var(--warning-color); border: 1px solid #fef3c7; }
-        .badge-overdue { background-color: #fef2f2; color: var(--danger-color); border: 1px solid #fee2e2; }
-        .badge-safe { background-color: #ecfdf5; color: var(--success-color); border: 1px solid #d1fae5; }
-        .badge-paid { background-color: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
-        .badge-partial { background-color: #fdf4ff; color: #c026d3; border: 1px solid #fae8ff; }
+        .badge-due-soon { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-overdue { background-color: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-safe { background-color: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-paid { background-color: rgba(37, 99, 235, 0.15); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.3); }
+        .badge-partial { background-color: rgba(192, 38, 211, 0.15); color: #e879f9; border: 1px solid rgba(192, 38, 211, 0.3); }
 
         .btn-action { border: none; padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; font-family: 'Cairo'; text-decoration: none; }
-        .btn-edit { background: #e0f2fe; color: #0284c7; }
-        .btn-edit:hover { background: #bae6fd; }
-        .btn-renew { background: #dcfce7; color: #16a34a; font-weight: 700; }
-        .btn-renew:hover { background: #bbf7d0; }
-        .btn-print { background: #fef3c7; color: #d97706; font-weight: 700; }
-        .btn-print:hover { background: #fde68a; }
-        .btn-delete { background: #fee2e2; color: var(--danger-color); }
-        .btn-delete:hover { background: #fecaca; }
+        .btn-edit { background: rgba(2, 132, 199, 0.2); color: #38bdf8; }
+        .btn-edit:hover { background: rgba(2, 132, 199, 0.3); }
+        .btn-renew { background: rgba(22, 163, 74, 0.2); color: #4ade80; font-weight: 700; }
+        .btn-renew:hover { background: rgba(22, 163, 74, 0.3); }
+        .btn-print { background: rgba(217, 119, 6, 0.2); color: #fbbf24; font-weight: 700; }
+        .btn-print:hover { background: rgba(217, 119, 6, 0.3); }
+        .btn-delete { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.3); }
         .btn-wa { background: var(--whatsapp-color); color: white; }
         .btn-wa:hover { background: var(--whatsapp-hover); }
 
@@ -255,9 +292,9 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             display: inline-block;
-            color: #475569;
+            color: #94a3b8;
             font-size: 0.8rem;
-            background: #f1f5f9;
+            background: #0f172a;
             padding: 3px 8px;
             border-radius: 6px;
         }
@@ -265,7 +302,7 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(3px);
             display: none;
             justify-content: center;
@@ -274,12 +311,12 @@
             padding: 15px;
         }
         .modal-card {
-            background: #ffffff;
+            background: var(--card-bg);
             width: 100%;
             max-width: 550px;
             border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 25px rgba(0,0,0,0.4);
             border: 1px solid var(--border-color);
             position: relative;
             max-height: 90vh;
@@ -293,27 +330,27 @@
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
         }
-        .modal-header h3 { margin: 0; color: var(--primary-dark); font-size: 1.15rem; }
+        .modal-header h3 { margin: 0; color: #60a5fa; font-size: 1.15rem; }
         .modal-close {
-            background: #f1f5f9;
+            background: #0f172a;
             border: none;
             width: 32px;
             height: 32px;
             border-radius: 50%;
             cursor: pointer;
-            color: #64748b;
+            color: #94a3b8;
             font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .modal-close:hover { background: #e2e8f0; color: #0f172a; }
+        .modal-close:hover { background: #334155; color: white; }
 
         #printReceiptModal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
             z-index: 20000;
             justify-content: center;
             align-items: center;
@@ -323,7 +360,7 @@
             width: 450px;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             border: 2px dashed var(--primary-color);
             font-family: 'Cairo', sans-serif;
             color: #000;
@@ -332,10 +369,10 @@
         .receipt-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
         .receipt-header h2 { margin: 0; font-size: 1.4rem; color: #1e293b; }
         .receipt-header p { margin: 4px 0 0 0; font-size: 0.8rem; color: #64748b; }
-        .receipt-body table { width: 100%; margin-bottom: 15px; }
+        .receipt-body table { width: 100%; margin-bottom: 15px; color: black; }
         .receipt-body th, .receipt-body td { padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-size: 0.9rem; }
         .receipt-body th { width: 35%; color: #475569; }
-        .receipt-footer { display: flex; justify-content: space-between; margin-top: 20px; font-size: 0.85rem; font-weight: bold; }
+        .receipt-footer { display: flex; justify-content: space-between; margin-top: 20px; font-size: 0.85rem; font-weight: bold; color: black; }
         
         @media print {
             body * { visibility: hidden; }
@@ -345,7 +382,7 @@
             .no-print { display: none !important; }
         }
 
-        footer { text-align: center; padding: 16px; color: #64748b; font-size: 0.78rem; border-top: 1px solid var(--border-color); margin-top: 20px; }
+        footer { text-align: center; padding: 16px; color: var(--muted-color); font-size: 0.78rem; border-top: 1px solid var(--border-color); margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -360,37 +397,57 @@
     </div>
 
     <!-- نافذة تسجيل الدخول -->
-    <div id="authSection">
-        <h2><i class="fa-solid fa-lock"></i> تسجيل الدخول السحابي</h2>
-        
-        <div id="systemLockedAlert" style="background:#fef2f2; color:#dc2626; padding:10px; border-radius:8px; margin-bottom:12px; font-weight:bold; font-size:0.85rem; display:none;">
-            ❌ النظام متوقف مؤقتاً لانتهاء الاشتراك الشهري (20$). 
-            <br><a href="https://api.whatsapp.com/send?phone=9647744744725&text=%Dمرحباً%20المطور،%20أريد%20تجديد%20اشتراك%20نظام%20RentFlow%20الشهري%20بقيمة%2020$" target="_blank" style="display:inline-block; margin-top:8px; background:#25d366; color:white; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:0.8rem;"><i class="fa-brands fa-whatsapp"></i> تواصل مع المطور للتجديد</a>
-        </div>
+    <div id="authSection" class="container">
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-width: 420px; margin: 60px auto; text-align: center; border: 1px solid var(--border-color);">
+            <h2><i class="fa-solid fa-lock"></i> تسجيل الدخول السحابي</h2>
+            
+            <div id="systemLockedAlert" style="background:rgba(239, 68, 68, 0.2); color:#f87171; padding:12px; border-radius:8px; margin-bottom:14px; font-weight:bold; font-size:0.85rem; display:none; border:1px solid rgba(239, 68, 68, 0.4);">
+                ❌ النظام متوقف مؤقتاً أو منتهي الاشتراك. يرجى التواصل مع مطور التطبيق للتجديد.
+                <br><a href="https://api.whatsapp.com/send?phone=9647744744725&text=%Dمرحباً%20المطور،%20أريد%20تجديد%20اشتراك%20نظام%20RentFlow%20الشهري%20بقيمة%2020$" target="_blank" style="display:inline-block; margin-top:8px; background:#25d366; color:white; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:0.8rem;"><i class="fa-brands fa-whatsapp"></i> تواصل مع المطور للتجديد</a>
+            </div>
 
-        <form id="loginForm">
-            <input type="text" id="loginUser" class="auth-input" placeholder="اسم المستخدم (Username)" required>
-            <input type="password" id="loginPass" class="auth-input" placeholder="كلمة المرور (Password)" required>
-            <button type="submit" class="auth-btn">دخول</button>
-        </form>
+            <form id="loginForm">
+                <input type="text" id="loginUser" class="auth-input" placeholder="اسم المستخدم (Username)" required>
+                <input type="password" id="loginPass" class="auth-input" placeholder="كلمة المرور (Password)" required>
+                <button type="submit" class="auth-btn">دخول</button>
+            </form>
+        </div>
     </div>
 
-    <!-- لوحة تحكم المطور -->
+    <!-- لوحة تحكم المطور المطابقة تماماً لطلبك وصورك -->
     <div id="devPanelScreen" class="container" style="display:none;">
         <header>
-            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
-            <h1><i class="fa-solid fa-code"></i> لوحة تحكم المطور (تجديد اشتراك الشركة)</h1>
-            <div class="developer-badge">By: Komail Nabeel</div>
+            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</button>
+            <h1><i class="fa-solid fa-code"></i> لوحة تحكم المطور</h1>
+            <div class="developer-badge"><i class="fa-solid fa-user-gear"></i> المطور: كميل (komail)</div>
         </header>
 
-        <div class="dev-panel">
-            <h3><i class="fa-solid fa-file-invoice-dollar"></i> إدارة اشتراك نظام شركة RentFlow (20$ / شهرياً)</h3>
-            <p id="devSubStatusText" style="font-weight: bold; margin: 15px 0;"></p>
-            <button onclick="extendCompanySubscription()" class="auth-btn" style="background:#10b981; padding:14px; font-size:1rem; max-width:400px; margin:0 auto;"><i class="fa-solid fa-calendar-check"></i> تجديد اشتراك الشركة شهراً إضافياً (دفع 20$)</button>
+        <div class="dev-panel-card">
+            <h2><i class="fa-solid fa-sliders"></i> إدارة اشتراك النظام ($20)</h2>
+            <p>من هنا يمكنك إدارة حالة اشتراك النظام (فعال أو إيقاف) وتحديد موعد انتهائه. العداد التنازلي سيتحدث تلقائياً عند الجميع.</p>
+            
+            <form id="devSettingsForm">
+                <div class="dev-group">
+                    <label>حالة الاشتراك:</label>
+                    <select id="devStatusSelect">
+                        <option value="active">فعال</option>
+                        <option value="expired">منتهي / إيقاف النظام</option>
+                    </select>
+                </div>
+                <div class="dev-group">
+                    <label>تاريخ انتهاء الاشتراك:</label>
+                    <input type="text" id="devExpiryInput" placeholder="2026/09/30">
+                </div>
+                <div class="dev-group">
+                    <label>سعر الاشتراك الشهري:</label>
+                    <input type="text" id="devPriceInput" value="20$" readonly style="opacity: 0.8; cursor: not-allowed;">
+                </div>
+                <button type="submit" class="auth-btn" style="background:#0284c7; margin-top: 10px;"><i class="fa-solid fa-floppy-disk"></i> حفظ وتحديث الاشتراك</button>
+            </form>
         </div>
     </div>
 
-    <!-- المحتوى الأساسي للشركة -->
+    <!-- المحتوى الأساسي للشركة (مدير الشركة nabeel والموظفين) -->
     <div id="appContent" class="container">
         <header>
             <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
@@ -400,13 +457,13 @@
 
         <div id="adminBanner"></div>
 
-        <!-- عداد وتنبيه اشتراك النظام -->
-        <div id="subCountdownBanner" class="subscription-banner">
-            <span id="subTextInfo"><i class="fa-solid fa-clock"></i> جاري التحقق من تفاصيل الاشتراك...</span>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <span id="subTimerCountdown" style="background: white; padding: 4px 10px; border-radius: 6px; font-size:0.8rem;"></span>
-                <a href="https://api.whatsapp.com/send?phone=9647744744725&text=%Dمرحباً%20المطور،%20أريد%20تجديد%20اشتراك%20نظام%20RentFlow%20الشهري%20بقيمة%2020$" target="_blank" id="waRenewBtn" class="wa-renew-btn">
-                    <i class="fa-brands fa-whatsapp"></i> تواصل مع المطور للتجديد (20$)
+        <!-- شريط حالة واشتراكات النظام المطابق لصورة العداد الحي -->
+        <div class="subscription-banner">
+            <div id="subStatusText" class="sub-status-line">حالة النظام: <span>جاري التحقق...</span></div>
+            <div id="subTimerCountdown" class="sub-time-line">المدة المتبقية للاشتراك ($20): جاري الحساب...</div>
+            <div class="wa-renew-box" id="waRenewBox">
+                <a href="https://api.whatsapp.com/send?phone=9647744744725&text=%Dمرحباً%20المطور،%20أريد%20تجديد%20اشتراك%20نظام%20RentFlow%20الشهري%20بقيمة%2020$" target="_blank" class="wa-renew-btn">
+                    <i class="fa-brands fa-whatsapp"></i> تواصل مع المطور لتجديد الاشتراك (20$)
                 </a>
             </div>
         </div>
@@ -426,7 +483,7 @@
                 <button type="submit" class="btn-submit" style="background:#0284c7;"><i class="fa-solid fa-user-plus"></i> إنشاء حساب للموظف</button>
             </form>
             <div style="margin-top: 15px; overflow-x: auto;">
-                <table style="background: white; border-radius: 8px;">
+                <table style="background: var(--bg-color); border-radius: 8px;">
                     <thead>
                         <tr>
                             <th>اسم المستخدم</th>
@@ -706,9 +763,6 @@
         const ADMIN_USER = "nabeel";
         const ADMIN_PASS = "1973";
 
-        // فرض تاريخ انتهاء الاشتراك بدقة على 2026-09-30 وتجاهل أي تاريخ قديم في سحابة فايربيس
-        const FORCED_EXPIRY = "2026-09-30";
-
         let currentUser = JSON.parse(localStorage.getItem('rent_current_user')) || null;
         let cachedProperties = [];
         let paymentChartInstance = null;
@@ -720,6 +774,7 @@
         const propertyForm = document.getElementById('propertyForm');
         const editPropertyForm = document.getElementById('editPropertyForm');
         const createUserForm = document.getElementById('createUserForm');
+        const devSettingsForm = document.getElementById('devSettingsForm');
         const tableBody = document.getElementById('propertyTableBody');
         const usersTableBody = document.getElementById('usersTableBody');
         const alertsSection = document.getElementById('alertsSection');
@@ -732,53 +787,108 @@
         const printReceiptModal = document.getElementById('printReceiptModal');
         const searchInput = document.getElementById('searchInput');
         const statusFilter = document.getElementById('statusFilter');
-        const devSubStatusText = document.getElementById('devSubStatusText');
+        const devStatusSelect = document.getElementById('devStatusSelect');
+        const devExpiryInput = document.getElementById('devExpiryInput');
         const systemLockedAlert = document.getElementById('systemLockedAlert');
-        const subTextInfo = document.getElementById('subTextInfo');
+        const subStatusText = document.getElementById('subStatusText');
         const subTimerCountdown = document.getElementById('subTimerCountdown');
-        const waRenewBtn = document.getElementById('waRenewBtn');
+        const waRenewBox = document.getElementById('waRenewBox');
 
-        function checkSystemSubscription() {
-            const expiryDateStr = FORCED_EXPIRY;
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            const exp = new Date(expiryDateStr);
-            exp.setHours(0,0,0,0);
-
-            const diffTime = exp - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            if (diffDays < 0) {
-                subTextInfo.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> تنبيه نظامي: انتهى اشتراك التطبيق الشهري (رسوم التجديد: 20$)!`;
-                subTimerCountdown.innerHTML = `<span style="color:red; font-weight:bold;">مُنتهي</span>`;
-                systemLockedAlert.style.display = 'block';
-                if(waRenewBtn) waRenewBtn.style.display = 'inline-flex';
-                return { locked: true, expiry: expiryDateStr };
-            } else {
-                subTextInfo.innerHTML = `<i class="fa-solid fa-clock"></i> الاشتراك الشهري (20$) ساري حتى: <strong>${expiryDateStr}</strong>`;
-                subTimerCountdown.innerHTML = `متبقي: <span style="color:#059669; font-weight:bold;">${diffDays} يوم</span>`;
-                systemLockedAlert.style.display = 'none';
+        // جلب وفحص بيانات الاشتراك الحية من سحابة فايربيس
+        async function checkSystemSubscription() {
+            try {
+                const docRef = db.collection('settings').doc('company_subscription');
+                const docSnap = await docRef.get();
                 
-                // زر الواتساب لا يظهر إلا إذا بقي 5 أيام أو أقل على انتهاء الاشتراك أو انتهى
-                if (diffDays <= 5) {
-                    if(waRenewBtn) waRenewBtn.style.display = 'inline-flex';
+                let status = "active";
+                let expiryDateStr = "2026/09/30";
+
+                if (!docSnap.exists) {
+                    await docRef.set({ status: "active", expiryDate: "2026/09/30" });
                 } else {
-                    if(waRenewBtn) waRenewBtn.style.display = 'none';
+                    const data = docSnap.data();
+                    status = data.status || "active";
+                    expiryDateStr = data.expiryDate || "2026/09/30";
                 }
 
-                return { locked: false, expiry: expiryDateStr };
+                // تحديث قيم لوحة المطور إذا كان مسجلاً
+                if (devStatusSelect) devStatusSelect.value = status;
+                if (devExpiryInput) devExpiryInput.value = expiryDateStr;
+
+                if (status === "expired") {
+                    subStatusText.innerHTML = `حالة النظام: <span style="color:#f87171;">متوقف / منتهي 🔴</span>`;
+                    subTimerCountdown.innerHTML = `الاشتراك منتهي ولا يعمل حالياً. يرجى تجديد الاشتراك ($20).`;
+                    systemLockedAlert.style.display = 'block';
+                    if(waRenewBox) waRenewBox.style.display = 'block';
+                    return { locked: true };
+                }
+
+                // حساب العداد التنازلي بدقة
+                // تحويل التاريخ من صيغة 2026/09/30 إلى 2026-09-30 ليتوافق مع الحساب البرمجي
+                const formattedExpiry = expiryDateStr.replace(/\//g, '-');
+                const now = new Date();
+                const exp = new Date(formattedExpiry + "T23:59:59");
+
+                const diffMs = exp - now;
+                if (diffMs <= 0) {
+                    subStatusText.innerHTML = `حالة النظام: <span style="color:#f87171;">منتهي 🔴</span>`;
+                    subTimerCountdown.innerHTML = `انتهى وقت الاشتراك. يرجى التجديد ($20).`;
+                    systemLockedAlert.style.display = 'block';
+                    if(waRenewBox) waRenewBox.style.display = 'block';
+                    return { locked: true };
+                }
+
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                subStatusText.innerHTML = `حالة النظام: <span style="color:#34d399;">فعال 🟢</span>`;
+                subTimerCountdown.innerHTML = `المدة المتبقية للاشتراك ($20): ${diffDays} يوم و ${diffHours} ساعة و ${diffMinutes} دقيقة`;
+                systemLockedAlert.style.display = 'none';
+
+                // إظهار زر الواتساب فقط إذا بقي 5 أيام أو أقل
+                if (diffDays <= 5) {
+                    if(waRenewBox) waRenewBox.style.display = 'block';
+                } else {
+                    if(waRenewBox) waRenewBox.style.display = 'none';
+                }
+
+                return { locked: false };
+            } catch (err) {
+                return { locked: false };
             }
         }
 
         checkSystemSubscription();
+        // تحديث العداد كل دقيقة تلقائياً
+        setInterval(checkSystemSubscription, 60000);
+
+        // حفظ وتحديث إعدادات اشتراك النظام من لوحة المطور
+        devSettingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newStatus = devStatusSelect.value;
+            const newExpiry = devExpiryInput.value.trim();
+
+            try {
+                await db.collection('settings').doc('company_subscription').set({
+                    status: newStatus,
+                    expiryDate: newExpiry
+                });
+                alert('✅ تم تحديث إعدادات اشتراك النظام بنجاح وتحديث العداد لجميع المستخدمين!');
+                checkSystemSubscription();
+            } catch (err) {
+                alert('فشل حفظ التحديثات: ' + err.message);
+            }
+        });
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const subCheck = checkSystemSubscription();
+            const subCheck = await checkSystemSubscription();
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
 
+            // دخول المطور komail / 2004
             if (u === DEV_USER && p === DEV_PASS) {
                 currentUser = { username: "المطور (Komail)", isDev: true };
                 localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
@@ -787,10 +897,11 @@
             }
 
             if (subCheck.locked) {
-                alert('❌ النظام متوقف مؤقتاً لانتهاء اشتراك الشركة الشهري (20$). تواصل مع المطور للتجديد.');
+                alert('❌ النظام متوقف مؤقتاً أو منتهي الاشتراك. يرجى التواصل مع المطور للتجديد.');
                 return;
             }
 
+            // دخول مدير الشركة nabeel / 1973
             if (u === ADMIN_USER && p === ADMIN_PASS) {
                 currentUser = { username: "مدير الشركة (Nabeel)", isAdmin: true };
                 localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
@@ -879,16 +990,6 @@
             }
         };
 
-        function loadDevSubscriptionInfo() {
-            devSubStatusText.innerHTML = `🟢 اشتراك الشركة **ساري** برمجياً حتى تاريخ: <strong>${FORCED_EXPIRY}</strong> <br><span style="color:#059669;">النظام يعمل بكفاءة تامة.</span>`;
-        }
-
-        window.extendCompanySubscription = function() {
-            alert(`✅ تم تثبيت الاشتراك السنوي/الشهري على التاريخ المعتمد: ${FORCED_EXPIRY}`);
-            loadDevSubscriptionInfo();
-            checkSystemSubscription();
-        }
-
         function logout() {
             localStorage.removeItem('rent_current_user');
             currentUser = null;
@@ -898,16 +999,24 @@
             loginForm.reset();
         }
 
-        function checkAuth() {
+        async function checkAuth() {
+            const subCheck = await checkSystemSubscription();
+            if (subCheck.locked && currentUser && !currentUser.isDev) {
+                alert('❌ تم إيقاف النظام لانتهاء الاشتراك الشهري (20$).');
+                logout();
+                return;
+            }
+
             if (currentUser) {
                 authSection.style.display = 'none';
                 
                 if (currentUser.isDev) {
                     devPanelScreen.style.display = 'block';
-                    loadDevSubscriptionInfo();
+                    appContent.style.display = 'none';
                     return;
                 }
 
+                devPanelScreen.style.display = 'none';
                 appContent.style.display = 'block';
                 userInfoDisplay.innerHTML = `<i class="fa-solid fa-user-shield"></i> مرحباً: ${currentUser.username}`;
                 
@@ -971,7 +1080,7 @@
                         data: [0, 0],
                         backgroundColor: ['#10b981', '#ef4444'],
                         borderWidth: 2,
-                        borderColor: '#ffffff',
+                        borderColor: '#1e293b',
                         hoverOffset: 4
                     }]
                 },
@@ -983,7 +1092,7 @@
                             position: 'bottom',
                             labels: {
                                 font: { family: 'Cairo', size: 12 },
-                                color: '#334155'
+                                color: '#cbd5e1'
                             }
                         },
                         tooltip: {
@@ -1132,12 +1241,12 @@
             });
 
             if (alertsCount === 0) {
-                alertsSection.innerHTML = `<div style="text-align:center; color:#10b981; padding:15px; font-weight:600;"><i class="fa-solid fa-circle-check"></i> لا توجد استحقاقات متأخرة حالياً!</div>`;
+                alertsSection.innerHTML = `<div style="text-align:center; color:#34d399; padding:15px; font-weight:600;"><i class="fa-solid fa-circle-check"></i> لا توجد استحقاقات متأخرة حالياً!</div>`;
             }
 
             tableBody.innerHTML = '';
             if (filtered.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: #64748b; padding: 25px;">لا توجد نتائج تطابق البحث أو التصفية.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: var(--muted-color); padding: 25px;">لا توجد نتائج تطابق البحث أو التصفية.</td></tr>`;
                 return;
             }
 
@@ -1169,15 +1278,15 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><strong>#${index + 1}</strong></td>
-                    ${currentUser.isAdmin ? `<td><span style="color:var(--primary-color); font-weight:bold;">${prop.owner}</span></td>` : ''}
+                    ${currentUser.isAdmin ? `<td><span style="color:#60a5fa; font-weight:bold;">${prop.owner}</span></td>` : ''}
                     <td><strong>${escapeHtml(prop.propName)}</strong></td>
                     <td>${escapeHtml(prop.location)}</td>
                     <td>${escapeHtml(prop.area || '—')}</td>
                     <td><bdi dir="ltr">${escapeHtml(prop.phone)}</bdi></td>
                     <td>${prop.dueDate || '—'}</td>
                     <td>${prop.amount.toLocaleString()} د.ع</td>
-                    <td style="color:#10b981; font-weight:bold;">${prop.paidAmount.toLocaleString()} د.ع</td>
-                    <td style="color:${remaining > 0 ? '#ef4444' : '#10b981'}; font-weight:bold;">${remaining.toLocaleString()} د.ع</td>
+                    <td style="color:#34d399; font-weight:bold;">${prop.paidAmount.toLocaleString()} د.ع</td>
+                    <td style="color:${remaining > 0 ? '#f87171' : '#34d399'}; font-weight:bold;">${remaining.toLocaleString()} د.ع</td>
                     <td><span class="notes-text" title="${escapeHtml(prop.notes || 'لا توجد ملاحظات')}">${escapeHtml(prop.notes || '—')}</span></td>
                     <td>
                         <div style="display:flex; flex-direction:column; gap:3px;">
@@ -1319,7 +1428,6 @@
             }
         };
 
-        // التحقق الأمني الفوري عند تحميل الصفحة
         if (currentUser) {
             checkAuth();
         } else {
