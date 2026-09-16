@@ -88,7 +88,10 @@
 
         .admin-notice { background: #dbeafe; color: #1e40af; padding: 12px; border-radius: 10px; margin-bottom: 18px; font-weight: 700; text-align: center; font-size: 0.9rem; border: 1px solid #bfdbfe; }
         
-        /* لوحة المطور الخاصة بك */
+        /* عداد واشتراكات بارزة للجميع */
+        .subscription-banner { background: #fffbeb; border: 1px solid #fde68a; color: #b45309; padding: 12px 16px; border-radius: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem; flex-wrap: wrap; gap: 10px; }
+        
+        /* لوحة المطور */
         .dev-panel { background: #fef3c7; border: 2px dashed #f59e0b; padding: 25px; border-radius: 14px; margin: 40px auto; max-width: 600px; text-align: center; }
         .dev-panel h3 { color: #b45309; margin-top: 0; }
 
@@ -125,7 +128,7 @@
         .stat-info h3 { margin: 0; font-size: 0.8rem; color: var(--muted-color); }
         .stat-info p { margin: 4px 0 0 0; font-size: 1.15rem; font-weight: 800; }
 
-        /* قسم الرسم البياني والملخص */
+        /* قسم الرسم البياني والتنبيهات */
         .dashboard-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -374,7 +377,7 @@
         </form>
     </div>
 
-    <!-- لوحة تحكم المطور (تظهر لك فقط عند إدخال حسابك komail / 2004) -->
+    <!-- لوحة تحكم المطور -->
     <div id="devPanelScreen" class="container" style="display:none;">
         <header>
             <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
@@ -398,6 +401,12 @@
         </header>
 
         <div id="adminBanner"></div>
+
+        <!-- عداد وتنبيه اشتراك النظام (يظهر للجميع) -->
+        <div id="subCountdownBanner" class="subscription-banner">
+            <span id="subTextInfo"><i class="fa-solid fa-clock"></i> جاري التحقق من تفاصيل الاشتراك...</span>
+            <span id="subTimerCountdown" style="background: white; padding: 4px 10px; border-radius: 6px; font-size:0.8rem;"></span>
+        </div>
 
         <!-- بطاقات الإحصائيات السريعة -->
         <div class="stats-grid">
@@ -660,12 +669,15 @@
             if (splash) { splash.style.opacity = '0'; splash.style.visibility = 'hidden'; }
         }, 1500);
 
-        // بيانات الدخول الرسمية
+        // بيانات الدخول للمطور ومدير الشركة
         const DEV_USER = "komail";
         const DEV_PASS = "2004";
 
         const ADMIN_USER = "nabeel";
         const ADMIN_PASS = "1973";
+
+        // تاريخ انتهاء الاشتراك الافتراضي المحدد (2026/09/30) بقيمة 20$
+        const DEFAULT_EXPIRY = "2026-09-30";
 
         let currentUser = JSON.parse(localStorage.getItem('rent_current_user')) || null;
         let cachedProperties = [];
@@ -689,31 +701,42 @@
         const statusFilter = document.getElementById('statusFilter');
         const devSubStatusText = document.getElementById('devSubStatusText');
         const systemLockedAlert = document.getElementById('systemLockedAlert');
+        const subTextInfo = document.getElementById('subTextInfo');
+        const subTimerCountdown = document.getElementById('subTimerCountdown');
 
         async function checkSystemSubscription() {
             try {
                 const docRef = db.collection('settings').doc('company_subscription');
                 const docSnap = await docRef.get();
+                let expiryDateStr = DEFAULT_EXPIRY;
                 if (!docSnap.exists) {
-                    const defaultDate = "2026-12-31";
-                    await docRef.set({ expiryDate: defaultDate });
-                    return { locked: false };
+                    await docRef.set({ expiryDate: DEFAULT_EXPIRY });
+                } else {
+                    expiryDateStr = docSnap.data().expiryDate || DEFAULT_EXPIRY;
                 }
-                const data = docSnap.data();
-                const expiryDateStr = data.expiryDate;
+
                 const today = new Date();
                 today.setHours(0,0,0,0);
                 const exp = new Date(expiryDateStr);
                 exp.setHours(0,0,0,0);
 
-                if (today > exp) {
+                const diffTime = exp - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                // تحديث العداد والتنبيه في واجهة الاستخدام للجميع
+                if (diffDays < 0) {
+                    subTextInfo.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> تنبيه نظامي: انتهى اشتراك التطبيق الشهري (رسوم التجديد: 20$)!`;
+                    subTimerCountdown.innerHTML = `<span style="color:red; font-weight:bold;">مُنتهي (تجاوز الموعد)</span>`;
                     systemLockedAlert.style.display = 'block';
                     return { locked: true, expiry: expiryDateStr };
+                } else {
+                    subTextInfo.innerHTML = `<i class="fa-solid fa-clock"></i> اشتراك التطبيق الشهري (20$) ساري حتى تاريخ: <strong>${expiryDateStr}</strong>`;
+                    subTimerCountdown.innerHTML = `متبقي: <span style="color:#059669; font-weight:bold;">${diffDays} يوم</span>`;
+                    systemLockedAlert.style.display = 'none';
+                    return { locked: false, expiry: expiryDateStr };
                 }
-                systemLockedAlert.style.display = 'none';
-                return { locked: false };
             } catch (err) {
-                return { locked: false };
+                return { locked: false, expiry: DEFAULT_EXPIRY };
             }
         }
 
@@ -726,7 +749,7 @@
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
 
-            // دخول المطور (أنت)
+            // دخول المطور (komail / 2004)
             if (u === DEV_USER && p === DEV_PASS) {
                 currentUser = { username: "المطور (Komail)", isDev: true };
                 localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
@@ -734,13 +757,13 @@
                 return;
             }
 
-            // إذا كان الاشتراك منتهي، يمنع دخول مدير الشركة أو المستخدمين العاديين فقط، بينما المطور يدخل ليجدد
+            // إذا انتهى الاشتراك يمنع دخول مدير الشركة أو المستخدمين العاديين
             if (subCheck.locked) {
-                alert('❌ النظام متوقف مؤقتاً لانتهاء اشتراك الشركة الشهري (20$). يرجى التجديد.');
+                alert('❌ النظام متوقف مؤقتاً لانتهاء اشتراك الشركة الشهري (20$). يرجى إبلاغ المطور للتجديد.');
                 return;
             }
 
-            // دخول مدير الشركة (Nabeel)
+            // دخول مدير الشركة (nabeel / 1973)
             if (u === ADMIN_USER && p === ADMIN_PASS) {
                 currentUser = { username: "مدير الشركة (Nabeel)", isAdmin: true };
                 localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
@@ -768,11 +791,9 @@
             try {
                 const docRef = db.collection('settings').doc('company_subscription');
                 const docSnap = await docRef.get();
-                let expiry = "2026-12-31";
+                let expiry = DEFAULT_EXPIRY;
                 if (docSnap.exists) {
                     expiry = docSnap.data().expiryDate;
-                } else {
-                    await docRef.set({ expiryDate: expiry });
                 }
 
                 const today = new Date();
@@ -805,7 +826,7 @@
                 await docRef.set({ expiryDate: nextMonthStr });
                 alert(`✅ تم استلام رسوم الاشتراك (20$) وتجديد اشتراك الشركة بنجاح ليصبح حتى تاريخ: ${nextMonthStr}`);
                 loadDevSubscriptionInfo();
-                systemLockedAlert.style.display = 'none';
+                checkSystemSubscription();
             } catch (err) {
                 alert('فشل تجديد الاشتراك: ' + err.message);
             }
