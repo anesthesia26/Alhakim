@@ -56,7 +56,7 @@
 
         .container { max-width: 1100px; margin: 0 auto; }
 
-        /* نافذة تسجيل الدخول (ظاهرة افتراضياً) */
+        /* نافذة تسجيل الدخول */
         #authSection {
             background: var(--card-bg);
             padding: 30px;
@@ -73,7 +73,7 @@
         .auth-btn { width: 100%; background: var(--primary-color); color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; font-size: 0.95rem; transition: 0.2s; }
         .auth-btn:hover { background: var(--primary-dark); }
 
-        /* لوحة التحكم الرئيسية ومحتوى الشركة (مخفية تماماً) */
+        /* لوحة التحكم الرئيسية */
         #appContent { display: none; }
         #devPanelScreen { display: none; }
 
@@ -390,7 +390,7 @@
         </div>
     </div>
 
-    <!-- المحتوى الأساسي للشركة (محمي تماماً ولا يظهر إلا بعد تسجيل الدخول) -->
+    <!-- المحتوى الأساسي للشركة -->
     <div id="appContent" class="container">
         <header>
             <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
@@ -695,11 +695,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // إخفاء شاشة البداية سريعاً لتفتح واجهة تسجيل الدخول فوراَ
         setTimeout(() => {
             const splash = document.getElementById('splashScreen');
             if (splash) { splash.style.opacity = '0'; splash.style.visibility = 'hidden'; }
-        }, 600);
+        }, 500);
 
         const DEV_USER = "komail";
         const DEV_PASS = "2004";
@@ -707,7 +706,8 @@
         const ADMIN_USER = "nabeel";
         const ADMIN_PASS = "1973";
 
-        const DEFAULT_EXPIRY = "2026-09-30";
+        // فرض تاريخ انتهاء الاشتراك بدقة على 2026-09-30 وتجاهل أي تاريخ قديم في سحابة فايربيس
+        const FORCED_EXPIRY = "2026-09-30";
 
         let currentUser = JSON.parse(localStorage.getItem('rent_current_user')) || null;
         let cachedProperties = [];
@@ -738,46 +738,35 @@
         const subTimerCountdown = document.getElementById('subTimerCountdown');
         const waRenewBtn = document.getElementById('waRenewBtn');
 
-        async function checkSystemSubscription() {
-            try {
-                const docRef = db.collection('settings').doc('company_subscription');
-                const docSnap = await docRef.get();
-                let expiryDateStr = DEFAULT_EXPIRY;
-                if (!docSnap.exists) {
-                    await docRef.set({ expiryDate: DEFAULT_EXPIRY });
-                } else {
-                    expiryDateStr = docSnap.data().expiryDate || DEFAULT_EXPIRY;
-                }
+        function checkSystemSubscription() {
+            const expiryDateStr = FORCED_EXPIRY;
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const exp = new Date(expiryDateStr);
+            exp.setHours(0,0,0,0);
 
-                const today = new Date();
-                today.setHours(0,0,0,0);
-                const exp = new Date(expiryDateStr);
-                exp.setHours(0,0,0,0);
+            const diffTime = exp - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                const diffTime = exp - today;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                if (diffDays < 0) {
-                    subTextInfo.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> تنبيه نظامي: انتهى اشتراك التطبيق الشهري (رسوم التجديد: 20$)!`;
-                    subTimerCountdown.innerHTML = `<span style="color:red; font-weight:bold;">مُنتهي (تجاوز الموعد)</span>`;
-                    systemLockedAlert.style.display = 'block';
+            if (diffDays < 0) {
+                subTextInfo.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> تنبيه نظامي: انتهى اشتراك التطبيق الشهري (رسوم التجديد: 20$)!`;
+                subTimerCountdown.innerHTML = `<span style="color:red; font-weight:bold;">مُنتهي</span>`;
+                systemLockedAlert.style.display = 'block';
+                if(waRenewBtn) waRenewBtn.style.display = 'inline-flex';
+                return { locked: true, expiry: expiryDateStr };
+            } else {
+                subTextInfo.innerHTML = `<i class="fa-solid fa-clock"></i> الاشتراك الشهري (20$) ساري حتى: <strong>${expiryDateStr}</strong>`;
+                subTimerCountdown.innerHTML = `متبقي: <span style="color:#059669; font-weight:bold;">${diffDays} يوم</span>`;
+                systemLockedAlert.style.display = 'none';
+                
+                // زر الواتساب لا يظهر إلا إذا بقي 5 أيام أو أقل على انتهاء الاشتراك أو انتهى
+                if (diffDays <= 5) {
                     if(waRenewBtn) waRenewBtn.style.display = 'inline-flex';
-                    return { locked: true, expiry: expiryDateStr };
                 } else {
-                    subTextInfo.innerHTML = `<i class="fa-solid fa-clock"></i> اشتراك التطبيق الشهري (20$) ساري حتى تاريخ: <strong>${expiryDateStr}</strong>`;
-                    subTimerCountdown.innerHTML = `متبقي: <span style="color:#059669; font-weight:bold;">${diffDays} يوم</span>`;
-                    systemLockedAlert.style.display = 'none';
-                    
-                    if (diffDays <= 5) {
-                        if(waRenewBtn) waRenewBtn.style.display = 'inline-flex';
-                    } else {
-                        if(waRenewBtn) waRenewBtn.style.display = 'none';
-                    }
-
-                    return { locked: false, expiry: expiryDateStr };
+                    if(waRenewBtn) waRenewBtn.style.display = 'none';
                 }
-            } catch (err) {
-                return { locked: false, expiry: DEFAULT_EXPIRY };
+
+                return { locked: false, expiry: expiryDateStr };
             }
         }
 
@@ -786,7 +775,7 @@
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const subCheck = await checkSystemSubscription();
+            const subCheck = checkSystemSubscription();
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
 
@@ -798,7 +787,7 @@
             }
 
             if (subCheck.locked) {
-                alert('❌ النظام متوقف مؤقتاً لانتهاء اشتراك الشركة الشهري (20$). يرجى التواصل مع المطور للتجديد.');
+                alert('❌ النظام متوقف مؤقتاً لانتهاء اشتراك الشركة الشهري (20$). تواصل مع المطور للتجديد.');
                 return;
             }
 
@@ -890,50 +879,14 @@
             }
         };
 
-        async function loadDevSubscriptionInfo() {
-            devSubStatusText.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري جلب بيانات اشتراك الشركة...`;
-            try {
-                const docRef = db.collection('settings').doc('company_subscription');
-                const docSnap = await docRef.get();
-                let expiry = DEFAULT_EXPIRY;
-                if (docSnap.exists) {
-                    expiry = docSnap.data().expiryDate;
-                }
-
-                const today = new Date();
-                today.setHours(0,0,0,0);
-                const exp = new Date(expiry);
-                exp.setHours(0,0,0,0);
-
-                if (today > exp) {
-                    devSubStatusText.innerHTML = `❌ اشتراك الشركة **منتهي** منذ تاريخ: ${expiry} <br><span style="color:#dc2626;">التطبيق متوقف حالياً عن العمل لديهم حتى يتم دفع الـ 20$ والتجديد.</span>`;
-                } else {
-                    devSubStatusText.innerHTML = `🟢 اشتراك الشركة **ساري** حتى تاريخ: ${expiry} <br><span style="color:#059669;">النظام يعمل لديهم بكفاءة.</span>`;
-                }
-            } catch (err) {
-                devSubStatusText.innerText = 'خطأ في الاتصال بقاعدة البيانات.';
-            }
+        function loadDevSubscriptionInfo() {
+            devSubStatusText.innerHTML = `🟢 اشتراك الشركة **ساري** برمجياً حتى تاريخ: <strong>${FORCED_EXPIRY}</strong> <br><span style="color:#059669;">النظام يعمل بكفاءة تامة.</span>`;
         }
 
-        window.extendCompanySubscription = async function() {
-            try {
-                const docRef = db.collection('settings').doc('company_subscription');
-                const docSnap = await docRef.get();
-                let baseDate = new Date();
-                if (docSnap.exists) {
-                    const currentExp = new Date(docSnap.data().expiryDate);
-                    if (currentExp > baseDate) baseDate = currentExp;
-                }
-                baseDate.setMonth(baseDate.getMonth() + 1);
-                const nextMonthStr = baseDate.toISOString().split('T')[0];
-
-                await docRef.set({ expiryDate: nextMonthStr });
-                alert(`✅ تم استلام رسوم الاشتراك (20$) وتجديد اشتراك الشركة بنجاح ليصبح حتى تاريخ: ${nextMonthStr}`);
-                loadDevSubscriptionInfo();
-                checkSystemSubscription();
-            } catch (err) {
-                alert('فشل تجديد الاشتراك: ' + err.message);
-            }
+        window.extendCompanySubscription = function() {
+            alert(`✅ تم تثبيت الاشتراك السنوي/الشهري على التاريخ المعتمد: ${FORCED_EXPIRY}`);
+            loadDevSubscriptionInfo();
+            checkSystemSubscription();
         }
 
         function logout() {
@@ -945,7 +898,7 @@
             loginForm.reset();
         }
 
-        async function checkAuth() {
+        function checkAuth() {
             if (currentUser) {
                 authSection.style.display = 'none';
                 
@@ -1079,12 +1032,12 @@
         });
 
         function loadPropertiesFromCloud() {
-            if (!currentUser) return; // قفل أمني تام: ممنوع جلب البيانات نهائياً إذا لم يتم تسجيل الدخول
+            if (!currentUser) return;
 
             tableBody.innerHTML = `<tr><td colspan="13" style="text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> جاري جلب البيانات من السحابة...</td></tr>`;
 
             db.collection('properties').onSnapshot((snapshot) => {
-                if (!currentUser) return; // قفل أمني إضافي أثناء التحديث
+                if (!currentUser) return;
 
                 let allProps = [];
                 snapshot.forEach((doc) => {
@@ -1366,7 +1319,7 @@
             }
         };
 
-        // التحقق الأمني عند التحميل
+        // التحقق الأمني الفوري عند تحميل الصفحة
         if (currentUser) {
             checkAuth();
         } else {
