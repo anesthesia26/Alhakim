@@ -48,7 +48,7 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #0f172a, #1e293b);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999; color: white; transition: opacity 0.5s ease, visibility 0.5s ease;
+            z-index: 9999; color: white; transition: opacity 0.4s ease, visibility 0.4s ease;
         }
         .splash-logo { font-size: 3rem; color: #60a5fa; margin-bottom: 10px; }
         .splash-title { font-size: 2.2rem; font-weight: 800; margin: 0 0 8px 0; background: linear-gradient(to right, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -56,7 +56,7 @@
 
         .container { max-width: 1100px; margin: 0 auto; }
 
-        /* نافذة تسجيل الدخول */
+        /* نافذة تسجيل الدخول (ظاهرة افتراضياً بوضوح) */
         #authSection {
             background: var(--card-bg);
             padding: 30px;
@@ -66,15 +66,14 @@
             margin: 60px auto;
             text-align: center;
             border: 1px solid var(--border-color);
-            position: relative;
-            z-index: 100;
+            display: block;
         }
         #authSection h2 { color: var(--primary-dark); margin-bottom: 20px; font-size: 1.3rem; }
         .auth-input { width: 100%; padding: 11px; margin-bottom: 14px; border: 1px solid var(--border-color); border-radius: 8px; font-family: 'Cairo'; font-size: 0.9rem; }
         .auth-btn { width: 100%; background: var(--primary-color); color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; font-size: 0.95rem; transition: 0.2s; }
         .auth-btn:hover { background: var(--primary-dark); }
 
-        /* لوحة التحكم الرئيسية (مخفية افتراضياً تماماً) */
+        /* لوحة التحكم الرئيسية (مخفية تماماً) */
         #appContent { display: none; }
 
         header {
@@ -90,21 +89,1290 @@
 
         .admin-notice { background: #dbeafe; color: #1e40af; padding: 12px; border-radius: 10px; margin-bottom: 18px; font-weight: 700; text-align: center; font-size: 0.9rem; border: 1px solid #bfdbfe; }
         
-        /* قسم إدارة الحسابات للآدمن */
         .admin-panel-card { background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px; border-radius: 14px; margin-bottom: 20px; }
         .admin-panel-card h3 { margin-top: 0; color: #1e40af; font-size: 1.05rem; border-bottom: 1px solid #bfdbfe; padding-bottom: 8px; }
 
-        /* عداد واشتراكات بارزة للجميع مع زر الواتساب */
         .subscription-banner { background: #fffbeb; border: 1px solid #fde68a; color: #b45309; padding: 12px 16px; border-radius: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem; flex-wrap: wrap; gap: 10px; }
         .wa-renew-btn { background: var(--whatsapp-color); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; display: none; align-items: center; gap: 5px; font-weight: bold; transition: 0.2s; }
         .wa-renew-btn:hover { background: var(--whatsapp-hover); }
 
-        /* لوحة المطور */
         .dev-panel { background: #fef3c7; border: 2px dashed #f59e0b; padding: 25px; border-radius: 14px; margin: 40px auto; max-width: 600px; text-align: center; }
         .dev-panel h3 { color: #b45309; margin-top: 0; }
 
-        /* بطاقات الإحصائيات */
         .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .stat-icon.blue { background: #eff6ff; color: #2563eb; }
+        .stat-icon.green { background: #ecfdf5; color: #059669; }
+        .stat-icon.red { background: #fef2f2; color: #dc2626; }
+        .stat-icon.amber { background: #fffbeb; color: #d97706; }
+        .stat-info h3 { margin: 0; font-size: 0.8rem; color: var(--muted-color); }
+        .stat-info p { margin: 4px 0 0 0; font-size: 1.15rem; font-weight: 800; }
+
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .dashboard-row { grid-template-columns: 1fr; }
+        }
+        .chart-card {
+            background: var(--card-bg);
+            padding: 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 260px;
+        }
+        .chart-card h3 { margin: 0 0 14px 0; font-size: 0.95rem; color: var(--primary-dark); width: 100%; text-align: right; }
+        .chart-wrapper { width: 100%; max-width: 280px; height: 200px; position: relative; }
+
+        .alerts-section { margin-bottom: 16px; }
+        .alert-card { padding: 11px 16px; border-radius: 10px; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+        .alert-danger { background-color: #fef2f2; color: var(--danger-color); border-right: 5px solid var(--danger-color); }
+        .alert-warning { background-color: #fffbeb; color: var(--warning-color); border-right: 5px solid var(--warning-color); }
+
+        .form-card { background: var(--card-bg); padding: 20px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .form-card h2 { margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; color: var(--primary-dark); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 6px; font-size: 0.8rem; font-weight: 700; color: #475569; }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background-color: #f8fafc;
+            font-family: 'Cairo';
+            color: var(--text-color);
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #fff;
+        }
+        .btn-submit { grid-column: 1 / -1; background-color: var(--primary-color); color: white; border: none; padding: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-size: 0.95rem; transition: 0.2s; }
+        .btn-submit:hover { background-color: var(--primary-dark); }
+
+        .filter-bar {
+            background: var(--card-bg);
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 18px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .search-box {
+            flex: 2;
+            min-width: 220px;
+            position: relative;
+        }
+        .search-box i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-color);
+        }
+        .search-box input {
+            width: 100%;
+            padding: 9px 36px 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Cairo';
+            font-size: 0.85rem;
+        }
+        .filter-select {
+            flex: 1;
+            min-width: 160px;
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Cairo';
+            font-size: 0.85rem;
+            background: #f8fafc;
+        }
+
+        .table-container { background: var(--card-bg); border-radius: 14px; overflow-x: auto; border: 1px solid var(--border-color); margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        table { width: 100%; border-collapse: collapse; text-align: right; white-space: nowrap; font-size: 0.85rem; }
+        th, td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 700; }
+        tr:hover { background-color: #f1f5f9; }
+        
+        .badge { padding: 4px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-due-soon { background-color: #fffbeb; color: var(--warning-color); border: 1px solid #fef3c7; }
+        .badge-overdue { background-color: #fef2f2; color: var(--danger-color); border: 1px solid #fee2e2; }
+        .badge-safe { background-color: #ecfdf5; color: var(--success-color); border: 1px solid #d1fae5; }
+        .badge-paid { background-color: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
+        .badge-partial { background-color: #fdf4ff; color: #c026d3; border: 1px solid #fae8ff; }
+
+        .btn-action { border: none; padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; font-family: 'Cairo'; text-decoration: none; }
+        .btn-edit { background: #e0f2fe; color: #0284c7; }
+        .btn-edit:hover { background: #bae6fd; }
+        .btn-renew { background: #dcfce7; color: #16a34a; font-weight: 700; }
+        .btn-renew:hover { background: #bbf7d0; }
+        .btn-print { background: #fef3c7; color: #d97706; font-weight: 700; }
+        .btn-print:hover { background: #fde68a; }
+        .btn-delete { background: #fee2e2; color: var(--danger-color); }
+        .btn-delete:hover { background: #fecaca; }
+        .btn-wa { background: var(--whatsapp-color); color: white; }
+        .btn-wa:hover { background: var(--whatsapp-hover); }
+
+        .notes-text {
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block;
+            color: #475569;
+            font-size: 0.8rem;
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(3px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 15px;
+        }
+        .modal-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 550px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .modal-header h3 { margin: 0; color: var(--primary-dark); font-size: 1.15rem; }
+        .modal-close {
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:hover { background: #e2e8f0; color: #0f172a; }
+
+        #printReceiptModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 20000;
+            justify-content: center;
+            align-items: center;
+        }
+        .receipt-container {
+            background: white;
+            width: 450px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 2px dashed var(--primary-color);
+            font-family: 'Cairo', sans-serif;
+            color: #000;
+            position: relative;
+        }
+        .receipt-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+        .receipt-header h2 { margin: 0; font-size: 1.4rem; color: #1e293b; }
+        .receipt-header p { margin: 4px 0 0 0; font-size: 0.8rem; color: #64748b; }
+        .receipt-body table { width: 100%; margin-bottom: 15px; }
+        .receipt-body th, .receipt-body td { padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-size: 0.9rem; }
+        .receipt-body th { width: 35%; color: #475569; }
+        .receipt-footer { display: flex; justify-content: space-between; margin-top: 20px; font-size: 0.85rem; font-weight: bold; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #printReceiptModal, #printReceiptModal * { visibility: visible; }
+            #printReceiptModal { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: white; display: flex !important; align-items: center; justify-content: center; }
+            .receipt-container { border: 2px solid #000; box-shadow: none; width: 100%; max-width: 100%; }
+            .no-print { display: none !important; }
+        }
+
+        footer { text-align: center; padding: 16px; color: #64748b; font-size: 0.78rem; border-top: 1px solid var(--border-color); margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة البداية -->
+    <div id="splashScreen">
+        <div class="splash-content" style="text-align: center;">
+            <div class="splash-logo"><i class="fa-solid fa-building-shield"></i></div>
+            <h1 class="splash-title">RentFlow</h1>
+            <div class="splash-developer"><i class="fa-solid fa-code"></i> By: Komail Nabeel / B.M.T Of Anesthesia & ICU</div>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول -->
+    <div id="authSection">
+        <h2><i class="fa-solid fa-lock"></i> تسجيل الدخول السحابي</h2>
+        
+        <div id="systemLockedAlert" style="background:#fef2f2; color:#dc2626; padding:10px; border-radius:8px; margin-bottom:12px; font-weight:bold; font-size:0.85rem; display:none;">
+            ❌ النظام متوقف مؤقتاً لانتهاء الاشتراك الشهري (20$). 
+            <br><a href="https://api.whatsapp.com/send?phone=9647744744725&text=%Dمرحباً%20المطور،%20أريد%20تجديد%20اشتراك%20نظام%20RentFlow%20الشهري%20بقيمة%2020$" target="_blank" style="display:inline-block; margin-top:8px; background:#25d366; color:white; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:0.8rem;"><i class="fa-brands fa-whatsapp"></i> تواصل مع المطور للتجديد</a>
+        </div>
+
+        <form id="loginForm">
+            <input type="text" id="loginUser" class="auth-input" placeholder="اسم المستخدم (Username)" required>
+            <input type="password" id="loginPass" class="auth-input" placeholder="كلمة المرور (Password)" required>
+            <button type="submit" class="auth-btn">دخول</button>
+        </form>
+    </div>
+
+    <!-- لوحة تحكم المطور -->
+    <div id="devPanelScreen" class="container" style="display:none;">
+        <header>
+            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            <h1><i class="fa-solid fa-code"></i> لوحة تحكم المطور (تجديد اشتراك الشركة)</h1>
+            <div class="developer-badge">By: Komail Nabeel</div>
+        </header>
+
+        <div class="dev-panel">
+            <h3><i class="fa-solid fa-file-invoice-dollar"></i> إدارة اشتراك نظام شركة RentFlow (20$ / شهرياً)</h3>
+            <p id="devSubStatusText" style="font-weight: bold; margin: 15px 0;"></p>
+            <button onclick="extendCompanySubscription()" class="auth-btn" style="background:#10b981; padding:14px; font-size:1rem; max-width:400px; margin:0 auto;"><i class="fa-solid fa-calendar-check"></i> تجديد اشتراك الشركة شهراً إضافياً (دفع 20$)</button>
+        </div>
+    </div>
+
+    <!-- المحتوى الأساسي للشركة (محمي بالكامل) -->
+    <div id="appContent" class="container">
+        <header>
+            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            <h1><i class="fa-solid fa-building-shield"></i> نظام إدارة الإيجارات السحابي (شركة)</h1>
+            <div class="developer-badge" id="userInfoDisplay"></div>
+        </header>
+
+        <div id="adminBanner"></div>
+
+        <!-- عداد وتنبيه اشتراك النظام -->
+        <div id="subCountdownBanner" class="subscription-banner">
+            <span id="subTextInfo"><i class="fa-solid fa-clock"></i> جاري التحقق من تفاصيل الاشتراك...</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span id="subTimerCountdown" style="background: white; padding: 4px 10px; border-radius: 6px; font-size:0.8rem;"></span>
+                <a href="https://api.whatsapp.com/send?phone=9647744744725&text=%Dمرحباً%20المطور،%20أريد%20تجديد%20اشتراك%20نظام%20RentFlow%20الشهري%20بقيمة%2020$" target="_blank" id="waRenewBtn" class="wa-renew-btn">
+                    <i class="fa-brands fa-whatsapp"></i> تواصل مع المطور للتجديد (20$)
+                </a>
+            </div>
+        </div>
+
+        <!-- لوحة إدارة الحسابات والعملاء (تظهر لمدير الشركة nabeel فقط) -->
+        <div id="adminAccountManager" class="admin-panel-card" style="display:none;">
+            <h3><i class="fa-solid fa-users-gear"></i> إنشاء حسابات لموظفي الشركة والمشتركين</h3>
+            <form id="createUserForm" class="form-grid" style="margin-top: 12px;">
+                <div class="form-group">
+                    <label>اسم المستخدم الجديد</label>
+                    <input type="text" id="newUsername" required placeholder="مثال: employee_ahmed">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="text" id="newPassword" required placeholder="كلمة المرور">
+                </div>
+                <button type="submit" class="btn-submit" style="background:#0284c7;"><i class="fa-solid fa-user-plus"></i> إنشاء حساب للموظف</button>
+            </form>
+            <div style="margin-top: 15px; overflow-x: auto;">
+                <table style="background: white; border-radius: 8px;">
+                    <thead>
+                        <tr>
+                            <th>اسم المستخدم</th>
+                            <th>كلمة المرور</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- بطاقات الإحصائيات السريعة -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fa-solid fa-city"></i></div>
+                <div class="stat-info">
+                    <h3>إجمالي العقارات</h3>
+                    <p id="statTotalProps">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon amber"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <div class="stat-info">
+                    <h3>إجمالي المستحق</h3>
+                    <p id="statTotalAmount">0 د.ع</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-info">
+                    <h3>إجمالي المسدد</h3>
+                    <p id="statPaidAmount">0 د.ع</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <div class="stat-info">
+                    <h3>إجمالي المتبقي</h3>
+                    <p id="statRemainingAmount">0 د.ع</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- صف الرسم البياني والتنبيهات -->
+        <div class="dashboard-row">
+            <div class="chart-card">
+                <h3><i class="fa-solid fa-chart-pie"></i> نسبة المبالغ (المسدد مقابل المتبقي)</h3>
+                <div class="chart-wrapper">
+                    <canvas id="paymentChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card" style="justify-content: flex-start;">
+                <h3><i class="fa-solid fa-bell"></i> التنبيهات ومواعيد الاستحقاق</h3>
+                <div id="alertsSection" class="alerts-section" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- استمارة الإضافة -->
+        <div class="form-card" id="formCardContainer">
+            <h2><i class="fa-solid fa-file-circle-plus"></i> تسجيل عقار / إيجار جديد</h2>
+            <form id="propertyForm" class="form-grid">
+                <div class="form-group">
+                    <label>اسم العقار / المستأجر</label>
+                    <input type="text" id="propName" required placeholder="مثال: شقة 4 - أحمد">
+                </div>
+                <div class="form-group">
+                    <label>الموقع</label>
+                    <input type="text" id="propLocation" required placeholder="مثال: حي الجامعة">
+                </div>
+                <div class="form-group">
+                    <label>مساحة العقار / رقم الوحدة</label>
+                    <input type="text" id="propArea" placeholder="مثال: 120 م² أو شقة رقم 3">
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب (عراقي)</label>
+                    <input type="tel" id="propPhone" required placeholder="07701234567">
+                </div>
+                <div class="form-group">
+                    <label>تاريخ الاستحقاق</label>
+                    <input type="date" id="dueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>مبلغ الإيجار الكلي (د.ع)</label>
+                    <input type="number" id="propAmount" required placeholder="400000">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المسدد حالياً (د.ع)</label>
+                    <input type="number" id="propPaidAmount" value="0" placeholder="0 إذا لم يسدد">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>ملاحظات السداد (دافع كامل / نص / واصل...)</label>
+                    <input type="text" id="propNotes" placeholder="مثال: دافع كامل، أو دافع نص ومتبقي 200 ألف...">
+                </div>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-cloud-arrow-up"></i> حفظ العقار سحابياً</button>
+            </form>
+        </div>
+
+        <!-- شريط البحث والتصفية -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="بحث بالاسم، الموقع، المساحة، الهاتف، أو الملاحظة...">
+            </div>
+            <select id="statusFilter" class="filter-select">
+                <option value="ALL">جميع الحالات</option>
+                <option value="OVERDUE">المتأخرون فقط ⚠️</option>
+                <option value="DUE_SOON">قريب الاستحقاق (خلال 5 أيام)</option>
+                <option value="SAFE">سليم (غير مستحق حالياً)</option>
+                <option value="FULLY_PAID">مسدد بالكامل 🟢</option>
+                <option value="PARTIAL_PAID">مسدد جزئياً (باقي نص / جزء) 🟣</option>
+                <option value="UNPAID">غير مسدد نهائياً 🔴</option>
+            </select>
+        </div>
+
+        <!-- جدول العقارات -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th id="thOwner" style="display:none;">المالك</th>
+                        <th>اسم العقار / المستأجر</th>
+                        <th>الموقع</th>
+                        <th>المساحة</th>
+                        <th>الهاتف</th>
+                        <th>الاستحقاق</th>
+                        <th>المبلغ الكلي</th>
+                        <th>المسدد</th>
+                        <th>المتبقي</th>
+                        <th>الملاحظات</th>
+                        <th>الحالة</th>
+                        <th style="text-align:center;">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="propertyTableBody"></tbody>
+            </table>
+        </div>
+
+        <footer>By: Komail Nabeel / B.M.T Of Anesthesia & ICU &copy; 2026</footer>
+    </div>
+
+    <!-- نافذة المودال للتعديل -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-pen-to-square"></i> تعديل بيانات العقار وسداد الإيجار</h3>
+                <button class="modal-close" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="editPropertyForm" class="form-grid">
+                <input type="hidden" id="editPropId">
+                <div class="form-group">
+                    <label>اسم العقار / المستأجر</label>
+                    <input type="text" id="editPropName" required>
+                </div>
+                <div class="form-group">
+                    <label>الموقع</label>
+                    <input type="text" id="editPropLocation" required>
+                </div>
+                <div class="form-group">
+                    <label>المساحة / رقم الوحدة</label>
+                    <input type="text" id="editPropArea">
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب</label>
+                    <input type="tel" id="editPropPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>تاريخ الاستحقاق</label>
+                    <input type="date" id="editDueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>مبلغ الإيجار الكلي (د.ع)</label>
+                    <input type="number" id="editPropAmount" required>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المسدد (د.ع)</label>
+                    <input type="number" id="editPaidAmount" required>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>ملاحظات السداد</label>
+                    <input type="text" id="editPropNotes" placeholder="مثال: دافع كامل، أو دافع نص...">
+                </div>
+                <div style="grid-column: 1 / -1; display:flex; gap:10px; margin-top: 10px;">
+                    <button type="submit" class="btn-submit" style="flex:1;"><i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات</button>
+                    <button type="button" class="btn-submit" style="background:#64748b; flex:1;" onclick="closeEditModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة معاينة سند القبض المخصص للطباعة -->
+    <div id="printReceiptModal">
+        <div class="receipt-container">
+            <div class="receipt-header">
+                <h2><i class="fa-solid fa-building-shield"></i> RentFlow - سند قبض إيجار</h2>
+                <p>نظام إدارة الإيجارات السحابي</p>
+            </div>
+            <div class="receipt-body">
+                <table>
+                    <tr>
+                        <th>تاريخ السند:</th>
+                        <td id="receiptDate"></td>
+                    </tr>
+                    <tr>
+                        <th>اسم المستأجر / العقار:</th>
+                        <td id="receiptName" style="font-weight: bold;"></td>
+                    </tr>
+                    <tr>
+                        <th>الموقع:</th>
+                        <td id="receiptLocation"></td>
+                    </tr>
+                    <tr>
+                        <th>المساحة / الوحدة:</th>
+                        <td id="receiptArea"></td>
+                    </tr>
+                    <tr>
+                        <th>رقم الهاتف:</th>
+                        <td id="receiptPhone"></td>
+                    </tr>
+                    <tr>
+                        <th>الإيجار الكلي:</th>
+                        <td id="receiptTotal"></td>
+                    </tr>
+                    <tr>
+                        <th>المبلغ الواصل (المسدد):</th>
+                        <td id="receiptPaid" style="color: #059669; font-weight: bold;"></td>
+                    </tr>
+                    <tr>
+                        <th>المبلغ المتبقي:</th>
+                        <td id="receiptRemaining" style="color: #dc2626; font-weight: bold;"></td>
+                    </tr>
+                    <tr>
+                        <th>تاريخ الاستحقاق القادم:</th>
+                        <td id="receiptDueDate"></td>
+                    </tr>
+                    <tr>
+                        <th>ملاحظات:</th>
+                        <td id="receiptNotes"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="receipt-footer">
+                <div>توقيع المستلم / المالك: ........................</div>
+                <div>ختم النظام</div>
+            </div>
+            <div style="margin-top: 25px; text-align: center; display: flex; gap: 10px;" class="no-print">
+                <button onclick="window.print()" class="auth-btn" style="background: #10b981;"><i class="fa-solid fa-print"></i> طباعة الوصل</button>
+                <button onclick="closeReceiptModal()" class="auth-btn" style="background: #64748b;"><i class="fa-solid fa-xmark"></i> إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB-Gjt2VYOu1VPyZ04ZqH-VX8djIj8cki0Q",
+            authDomain: "rentflow-eee08.firebaseapp.com",
+            projectId: "rentflow-eee08",
+            storageBucket: "rentflow-eee08.firebasestorage.app",
+            messagingSenderId: "652314883968",
+            appId: "1:652314883968:web:4ddb00185a7e5e5842b365",
+            measurementId: "G-2GPWX6GYBN"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // إخفاء شاشة البداية بسرعة لتجنب أي تعليق
+        setTimeout(() => {
+            const splash = document.getElementById('splashScreen');
+            if (splash) { splash.style.opacity = '0'; splash.style.visibility = 'hidden'; }
+        }, 800);
+
+        const DEV_USER = "komail";
+        const DEV_PASS = "2004";
+
+        const ADMIN_USER = "nabeel";
+        const ADMIN_PASS = "1973";
+
+        const DEFAULT_EXPIRY = "2026-09-30";
+
+        let currentUser = JSON.parse(localStorage.getItem('rent_current_user')) || null;
+        let cachedProperties = [];
+        let paymentChartInstance = null;
+
+        const authSection = document.getElementById('authSection');
+        const appContent = document.getElementById('appContent');
+        const devPanelScreen = document.getElementById('devPanelScreen');
+        const loginForm = document.getElementById('loginForm');
+        const propertyForm = document.getElementById('propertyForm');
+        const editPropertyForm = document.getElementById('editPropertyForm');
+        const createUserForm = document.getElementById('createUserForm');
+        const tableBody = document.getElementById('propertyTableBody');
+        const usersTableBody = document.getElementById('usersTableBody');
+        const alertsSection = document.getElementById('alertsSection');
+        const userInfoDisplay = document.getElementById('userInfoDisplay');
+        const adminBanner = document.getElementById('adminBanner');
+        const adminAccountManager = document.getElementById('adminAccountManager');
+        const formCardContainer = document.getElementById('formCardContainer');
+        const thOwner = document.getElementById('thOwner');
+        const editModal = document.getElementById('editModal');
+        const printReceiptModal = document.getElementById('printReceiptModal');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const devSubStatusText = document.getElementById('devSubStatusText');
+        const systemLockedAlert = document.getElementById('systemLockedAlert');
+        const subTextInfo = document.getElementById('subTextInfo');
+        const subTimerCountdown = document.getElementById('subTimerCountdown');
+        const waRenewBtn = document.getElementById('waRenewBtn');
+
+        async function checkSystemSubscription() {
+            try {
+                const docRef = db.collection('settings').doc('company_subscription');
+                const docSnap = await docRef.get();
+                let expiryDateStr = DEFAULT_EXPIRY;
+                if (!docSnap.exists) {
+                    await docRef.set({ expiryDate: DEFAULT_EXPIRY });
+                } else {
+                    expiryDateStr = docSnap.data().expiryDate || DEFAULT_EXPIRY;
+                }
+
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const exp = new Date(expiryDateStr);
+                exp.setHours(0,0,0,0);
+
+                const diffTime = exp - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays < 0) {
+                    subTextInfo.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> تنبيه نظامي: انتهى اشتراك التطبيق الشهري (رسوم التجديد: 20$)!`;
+                    subTimerCountdown.innerHTML = `<span style="color:red; font-weight:bold;">مُنتهي (تجاوز الموعد)</span>`;
+                    systemLockedAlert.style.display = 'block';
+                    if(waRenewBtn) waRenewBtn.style.display = 'inline-flex';
+                    return { locked: true, expiry: expiryDateStr };
+                } else {
+                    subTextInfo.innerHTML = `<i class="fa-solid fa-clock"></i> اشتراك التطبيق الشهري (20$) ساري حتى تاريخ: <strong>${expiryDateStr}</strong>`;
+                    subTimerCountdown.innerHTML = `متبقي: <span style="color:#059669; font-weight:bold;">${diffDays} يوم</span>`;
+                    systemLockedAlert.style.display = 'none';
+                    
+                    if (diffDays <= 5) {
+                        if(waRenewBtn) waRenewBtn.style.display = 'inline-flex';
+                    } else {
+                        if(waRenewBtn) waRenewBtn.style.display = 'none';
+                    }
+
+                    return { locked: false, expiry: expiryDateStr };
+                }
+            } catch (err) {
+                return { locked: false, expiry: DEFAULT_EXPIRY };
+            }
+        }
+
+        checkSystemSubscription();
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const subCheck = await checkSystemSubscription();
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+
+            if (u === DEV_USER && p === DEV_PASS) {
+                currentUser = { username: "المطور (Komail)", isDev: true };
+                localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
+                checkAuth();
+                return;
+            }
+
+            if (subCheck.locked) {
+                alert('❌ النظام متوقف مؤقتاً لانتهاء اشتراك الشركة الشهري (20$). يرجى التواصل مع المطور للتجديد.');
+                return;
+            }
+
+            if (u === ADMIN_USER && p === ADMIN_PASS) {
+                currentUser = { username: "مدير الشركة (Nabeel)", isAdmin: true };
+                localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
+                checkAuth();
+                return;
+            }
+
+            try {
+                const usersRef = db.collection('users');
+                const query = await usersRef.where('username', '==', u).where('password', '==', p).get();
+                if (!query.empty) {
+                    currentUser = { username: u, isAdmin: false };
+                    localStorage.setItem('rent_current_user', JSON.stringify(currentUser));
+                    checkAuth();
+                } else {
+                    alert('خطأ في اسم المستخدم أو كلمة المرور!');
+                }
+            } catch (error) {
+                alert('حدث خطأ في الاتصال: ' + error.message);
+            }
+        });
+
+        createUserForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || !currentUser.isAdmin) return;
+
+            const u = document.getElementById('newUsername').value.trim();
+            const p = document.getElementById('newPassword').value.trim();
+
+            try {
+                const usersRef = db.collection('users');
+                const checkUser = await usersRef.where('username', '==', u).get();
+                if (!checkUser.empty) {
+                    alert('اسم المستخدم موجود مسبقاً.');
+                    return;
+                }
+
+                await usersRef.add({
+                    username: u,
+                    password: p,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert('تم إنشاء حساب الموظف بنجاح!');
+                createUserForm.reset();
+                loadCloudUsers();
+            } catch (error) {
+                alert('فشل إنشاء الحساب: ' + error.message);
+            }
+        });
+
+        function loadCloudUsers() {
+            if (!currentUser || !currentUser.isAdmin) return;
+            usersTableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">جاري تحميل الحسابات...</td></tr>`;
+            
+            db.collection('users').get().then((snapshot) => {
+                usersTableBody.innerHTML = '';
+                if (snapshot.empty) {
+                    usersTableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">لا توجد حسابات موظفين مسجلة حالياً.</td></tr>`;
+                    return;
+                }
+                snapshot.forEach((doc) => {
+                    const uData = doc.data();
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${escapeHtml(uData.username)}</strong></td>
+                        <td>${escapeHtml(uData.password)}</td>
+                        <td>
+                            <button class="btn-action btn-delete" onclick="deleteUserAccount('${doc.id}')"><i class="fa-solid fa-trash"></i> حذف</button>
+                        </td>
+                    `;
+                    usersTableBody.appendChild(tr);
+                });
+            });
+        }
+
+        window.deleteUserAccount = async function(docId) {
+            if (confirm('هل أنت متأكد من حذف هذا الحساب نهائياً؟')) {
+                try {
+                    await db.collection('users').doc(docId).delete();
+                    alert('تم حذف الحساب بنجاح.');
+                    loadCloudUsers();
+                } catch (err) {
+                    alert('فشل الحذف: ' + err.message);
+                }
+            }
+        };
+
+        async function loadDevSubscriptionInfo() {
+            devSubStatusText.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري جلب بيانات اشتراك الشركة...`;
+            try {
+                const docRef = db.collection('settings').doc('company_subscription');
+                const docSnap = await docRef.get();
+                let expiry = DEFAULT_EXPIRY;
+                if (docSnap.exists) {
+                    expiry = docSnap.data().expiryDate;
+                }
+
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const exp = new Date(expiry);
+                exp.setHours(0,0,0,0);
+
+                if (today > exp) {
+                    devSubStatusText.innerHTML = `❌ اشتراك الشركة **منتهي** منذ تاريخ: ${expiry} <br><span style="color:#dc2626;">التطبيق متوقف حالياً عن العمل لديهم حتى يتم دفع الـ 20$ والتجديد.</span>`;
+                } else {
+                    devSubStatusText.innerHTML = `🟢 اشتراك الشركة **ساري** حتى تاريخ: ${expiry} <br><span style="color:#059669;">النظام يعمل لديهم بكفاءة.</span>`;
+                }
+            } catch (err) {
+                devSubStatusText.innerText = 'خطأ في الاتصال بقاعدة البيانات.';
+            }
+        }
+
+        window.extendCompanySubscription = async function() {
+            try {
+                const docRef = db.collection('settings').doc('company_subscription');
+                const docSnap = await docRef.get();
+                let baseDate = new Date();
+                if (docSnap.exists) {
+                    const currentExp = new Date(docSnap.data().expiryDate);
+                    if (currentExp > baseDate) baseDate = currentExp;
+                }
+                baseDate.setMonth(baseDate.getMonth() + 1);
+                const nextMonthStr = baseDate.toISOString().split('T')[0];
+
+                await docRef.set({ expiryDate: nextMonthStr });
+                alert(`✅ تم استلام رسوم الاشتراك (20$) وتجديد اشتراك الشركة بنجاح ليصبح حتى تاريخ: ${nextMonthStr}`);
+                loadDevSubscriptionInfo();
+                checkSystemSubscription();
+            } catch (err) {
+                alert('فشل تجديد الاشتراك: ' + err.message);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('rent_current_user');
+            currentUser = null;
+            authSection.style.display = 'block';
+            appContent.style.display = 'none';
+            devPanelScreen.style.display = 'none';
+            loginForm.reset();
+        }
+
+        async function checkAuth() {
+            if (currentUser) {
+                authSection.style.display = 'none';
+                
+                if (currentUser.isDev) {
+                    devPanelScreen.style.display = 'block';
+                    loadDevSubscriptionInfo();
+                    return;
+                }
+
+                appContent.style.display = 'block';
+                userInfoDisplay.innerHTML = `<i class="fa-solid fa-user-shield"></i> مرحباً: ${currentUser.username}`;
+                
+                if (currentUser.isAdmin) {
+                    adminBanner.innerHTML = `<div class="admin-notice"><i class="fa-solid fa-shield-halved"></i> لوحة إدارة الشركة (مدير الشركة): تستعرض وتدير جميع عقارات النظام والحسابات.</div>`;
+                    adminAccountManager.style.display = 'block';
+                    thOwner.style.display = 'table-cell';
+                    loadCloudUsers();
+                } else {
+                    adminBanner.innerHTML = '';
+                    adminAccountManager.style.display = 'none';
+                    thOwner.style.display = 'none';
+                }
+                formCardContainer.style.display = 'block';
+                initChart();
+                loadPropertiesFromCloud();
+            } else {
+                authSection.style.display = 'block';
+                appContent.style.display = 'none';
+                devPanelScreen.style.display = 'none';
+            }
+        }
+
+        function formatIraqiPhone(phone) {
+            if (!phone) return '';
+            let cleaned = phone.toString().replace(/\D/g, '');
+            if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
+            if (!cleaned.startsWith('964')) cleaned = '964' + cleaned;
+            return cleaned;
+        }
+
+        function checkDueDateStatus(dueDateStr) {
+            if (!dueDateStr) return { status: 'غير محدد', class: 'badge-safe', alertType: null, icon: 'fa-circle-question', key: 'SAFE' };
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const dueDate = new Date(dueDateStr);
+            dueDate.setHours(0,0,0,0);
+
+            const diffTime = dueDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+                return { status: `متأخر (${Math.abs(diffDays)} يوم)`, class: 'badge-overdue', alertType: 'danger', icon: 'fa-triangle-exclamation', key: 'OVERDUE' };
+            }
+            if (diffDays <= 5) {
+                return { status: `قريب (${diffDays} يوم)`, class: 'badge-due-soon', alertType: 'warning', icon: 'fa-clock', key: 'DUE_SOON' };
+            }
+            return { status: 'سليم', class: 'badge-safe', alertType: null, icon: 'fa-circle-check', key: 'SAFE' };
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('paymentChart').getContext('2d');
+            if (paymentChartInstance) {
+                paymentChartInstance.destroy();
+            }
+            paymentChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['المسدد', 'المتبقي'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Cairo', size: 12 },
+                                color: '#334155'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw || 0).toLocaleString();
+                                    return ` ${context.label}: ${val} د.ع`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '68%'
+                }
+            });
+        }
+
+        propertyForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const amount = Number(document.getElementById('propAmount').value) || 0;
+            const paid = Number(document.getElementById('propPaidAmount').value) || 0;
+            const notes = document.getElementById('propNotes').value.trim();
+
+            const newProperty = {
+                owner: currentUser.username,
+                propName: document.getElementById('propName').value.trim(),
+                location: document.getElementById('propLocation').value.trim(),
+                area: document.getElementById('propArea').value.trim(),
+                phone: document.getElementById('propPhone').value.trim(),
+                dueDate: document.getElementById('dueDate').value,
+                amount: amount,
+                paidAmount: paid,
+                notes: notes,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                await db.collection('properties').add(newProperty);
+                alert('تم حفظ العقار في السحابة بنجاح!');
+                propertyForm.reset();
+                document.getElementById('propPaidAmount').value = "0";
+            } catch (error) {
+                alert('فشل حفظ العقار: ' + error.message);
+            }
+        });
+
+        function loadPropertiesFromCloud() {
+            if (!currentUser) return; // حماية صارمة لمنع جلب البيانات قبل تسجيل الدخول
+
+            tableBody.innerHTML = `<tr><td colspan="13" style="text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> جاري جلب البيانات من السحابة...</td></tr>`;
+
+            db.collection('properties').onSnapshot((snapshot) => {
+                if (!currentUser) return; // حماية إضافية
+
+                let allProps = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    allProps.push({
+                        id: doc.id,
+                        ...data,
+                        amount: Number(data.amount) || 0,
+                        paidAmount: Number(data.paidAmount) || 0,
+                        area: data.area || '',
+                        notes: data.notes || '',
+                        sortTime: data.createdAt ? (data.createdAt.toMillis ? data.createdAt.toMillis() : new Date(data.createdAt).getTime()) : 0
+                    });
+                });
+
+                allProps.sort((a, b) => b.sortTime - a.sortTime);
+                cachedProperties = allProps;
+                renderUI();
+            }, (err) => {
+                alert('خطأ في جلب البيانات: ' + err.message);
+            });
+        }
+
+        function renderUI() {
+            if (!currentUser) return;
+
+            const query = (searchInput.value || '').trim().toLowerCase();
+            const filter = statusFilter.value;
+
+            let userProps = currentUser.isAdmin ? cachedProperties : cachedProperties.filter(p => p.owner === currentUser.username);
+
+            let totalAmount = 0;
+            let totalPaid = 0;
+            let totalRemaining = 0;
+
+            userProps.forEach(p => {
+                totalAmount += p.amount;
+                totalPaid += p.paidAmount;
+                const rem = Math.max(0, p.amount - p.paidAmount);
+                totalRemaining += rem;
+            });
+
+            document.getElementById('statTotalProps').innerText = userProps.length;
+            document.getElementById('statTotalAmount').innerText = totalAmount.toLocaleString() + ' د.ع';
+            document.getElementById('statPaidAmount').innerText = totalPaid.toLocaleString() + ' د.ع';
+            document.getElementById('statRemainingAmount').innerText = totalRemaining.toLocaleString() + ' د.ع';
+
+            if (paymentChartInstance) {
+                paymentChartInstance.data.datasets[0].data = [totalPaid, totalRemaining];
+                paymentChartInstance.update();
+            }
+
+            let filtered = userProps.filter(p => {
+                const check = checkDueDateStatus(p.dueDate);
+                const remaining = Math.max(0, p.amount - p.paidAmount);
+
+                const matchQuery = !query || 
+                    (p.propName && p.propName.toLowerCase().includes(query)) ||
+                    (p.location && p.location.toLowerCase().includes(query)) ||
+                    (p.area && p.area.toLowerCase().includes(query)) ||
+                    (p.phone && p.phone.toString().includes(query)) ||
+                    (p.notes && p.notes.toLowerCase().includes(query));
+
+                if (!matchQuery) return false;
+
+                if (filter === 'ALL') return true;
+                if (filter === 'OVERDUE') return check.key === 'OVERDUE';
+                if (filter === 'DUE_SOON') return check.key === 'DUE_SOON';
+                if (filter === 'SAFE') return check.key === 'SAFE';
+                if (filter === 'FULLY_PAID') return remaining === 0 && p.amount > 0;
+                if (filter === 'PARTIAL_PAID') return p.paidAmount > 0 && remaining > 0;
+                if (filter === 'UNPAID') return p.paidAmount === 0;
+                return true;
+            });
+
+            alertsSection.innerHTML = '';
+            let alertsCount = 0;
+            userProps.forEach(prop => {
+                const check = checkDueDateStatus(prop.dueDate);
+                const rem = Math.max(0, prop.amount - prop.paidAmount);
+                if (check.alertType && rem > 0) {
+                    alertsCount++;
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = `alert-card alert-${check.alertType}`;
+                    const ownerText = currentUser.isAdmin ? `[المستخدم: ${prop.owner}] ` : '';
+                    alertDiv.innerHTML = `
+                        <span><i class="fa-solid ${check.icon}"></i> ${ownerText}<strong>${prop.propName}</strong>: استحقاق (${check.status}) - المتبقي: ${rem.toLocaleString()} د.ع</span>
+                        <a href="tel:${prop.phone}" style="color:inherit; font-size:0.8rem;"><i class="fa-solid fa-phone"></i> اتصال</a>
+                    `;
+                    alertsSection.appendChild(alertDiv);
+                }
+            });
+
+            if (alertsCount === 0) {
+                alertsSection.innerHTML = `<div style="text-align:center; color:#10b981; padding:15px; font-weight:600;"><i class="fa-solid fa-circle-check"></i> لا توجد استحقاقات متأخرة حالياً!</div>`;
+            }
+
+            tableBody.innerHTML = '';
+            if (filtered.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: #64748b; padding: 25px;">لا توجد نتائج تطابق البحث أو التصفية.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((prop, index) => {
+                const check = checkDueDateStatus(prop.dueDate);
+                const remaining = Math.max(0, prop.amount - prop.paidAmount);
+                const formattedPhone = formatIraqiPhone(prop.phone);
+
+                let payBadge = '';
+                if (prop.amount > 0 && remaining === 0) {
+                    payBadge = `<span class="badge badge-paid"><i class="fa-solid fa-check-double"></i> دافع كامل</span>`;
+                } else if (prop.paidAmount > 0) {
+                    payBadge = `<span class="badge badge-partial"><i class="fa-solid fa-chart-pie"></i> دافع جزء (باقي: ${remaining.toLocaleString()})</span>`;
+                } else {
+                    payBadge = `<span class="badge badge-overdue"><i class="fa-solid fa-circle-xmark"></i> غير مسدد</span>`;
+                }
+
+                const notesSnippet = prop.notes ? `\nالملاحظات: ${prop.notes}` : '';
+                const tableWaText = encodeURIComponent(
+                    `مرحباً (${prop.propName})\n` +
+                    `تذكير بخصوص إيجار العقار في (${prop.location} - مساحة: ${prop.area || '—'}):\n` +
+                    `• الإيجار الكلي: ${prop.amount.toLocaleString()} د.ع\n` +
+                    `• المسدد: ${prop.paidAmount.toLocaleString()} د.ع\n` +
+                    `• المتبقي: ${remaining.toLocaleString()} د.ع\n` +
+                    `• تاريخ الاستحقاق: ${prop.dueDate}\n` +
+                    `الحالة: ${check.status}${notesSnippet}`
+                );
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>#${index + 1}</strong></td>
+                    ${currentUser.isAdmin ? `<td><span style="color:var(--primary-color); font-weight:bold;">${prop.owner}</span></td>` : ''}
+                    <td><strong>${escapeHtml(prop.propName)}</strong></td>
+                    <td>${escapeHtml(prop.location)}</td>
+                    <td>${escapeHtml(prop.area || '—')}</td>
+                    <td><bdi dir="ltr">${escapeHtml(prop.phone)}</bdi></td>
+                    <td>${prop.dueDate || '—'}</td>
+                    <td>${prop.amount.toLocaleString()} د.ع</td>
+                    <td style="color:#10b981; font-weight:bold;">${prop.paidAmount.toLocaleString()} د.ع</td>
+                    <td style="color:${remaining > 0 ? '#ef4444' : '#10b981'}; font-weight:bold;">${remaining.toLocaleString()} د.ع</td>
+                    <td><span class="notes-text" title="${escapeHtml(prop.notes || 'لا توجد ملاحظات')}">${escapeHtml(prop.notes || '—')}</span></td>
+                    <td>
+                        <div style="display:flex; flex-direction:column; gap:3px;">
+                            <span class="badge ${check.class}"><i class="fa-solid ${check.icon}"></i> ${check.status}</span>
+                            ${payBadge}
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display:flex; gap:5px; justify-content:center; flex-wrap:nowrap;">
+                            <button class="btn-action btn-print" title="طباعة سند قبض" onclick="openPrintReceipt('${prop.id}')"><i class="fa-solid fa-print"></i> طباعة</button>
+                            <button class="btn-action btn-renew" title="تسديد كامل وتجديد لشهر قادم" onclick="quickRenewMonth('${prop.id}')"><i class="fa-solid fa-arrows-rotate"></i> تجديد</button>
+                            <button class="btn-action btn-edit" title="تعديل السداد والملاحظات" onclick="openEditModal('${prop.id}')"><i class="fa-solid fa-pen"></i></button>
+                            <a href="https://api.whatsapp.com/send?phone=${formattedPhone}&text=${tableWaText}" target="_blank" class="btn-action btn-wa" title="إرسال إشعار واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+                            <button class="btn-action btn-delete" title="حذف العقار" onclick="deleteProperty('${prop.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        searchInput.addEventListener('input', renderUI);
+        statusFilter.addEventListener('change', renderUI);
+
+        window.openEditModal = function(propId) {
+            const prop = cachedProperties.find(p => p.id === propId);
+            if (!prop) return;
+
+            document.getElementById('editPropId').value = prop.id;
+            document.getElementById('editPropName').value = prop.propName || '';
+            document.getElementById('editPropLocation').value = prop.location || '';
+            document.getElementById('editPropArea').value = prop.area || '';
+            document.getElementById('editPropPhone').value = prop.phone || '';
+            document.getElementById('editDueDate').value = prop.dueDate || '';
+            document.getElementById('editPropAmount').value = prop.amount || 0;
+            document.getElementById('editPaidAmount').value = prop.paidAmount || 0;
+            document.getElementById('editPropNotes').value = prop.notes || '';
+
+            editModal.style.display = 'flex';
+        };
+
+        window.closeEditModal = function() {
+            editModal.style.display = 'none';
+            editPropertyForm.reset();
+        };
+
+        window.openPrintReceipt = function(propId) {
+            const prop = cachedProperties.find(p => p.id === propId);
+            if (!prop) return;
+
+            const remaining = Math.max(0, prop.amount - prop.paidAmount);
+
+            document.getElementById('receiptDate').innerText = new Date().toLocaleDateString('ar-IQ');
+            document.getElementById('receiptName').innerText = prop.propName || '—';
+            document.getElementById('receiptLocation').innerText = prop.location || '—';
+            document.getElementById('receiptArea').innerText = prop.area || '—';
+            document.getElementById('receiptPhone').innerText = prop.phone || '—';
+            document.getElementById('receiptTotal').innerText = prop.amount.toLocaleString() + ' د.ع';
+            document.getElementById('receiptPaid').innerText = prop.paidAmount.toLocaleString() + ' د.ع';
+            document.getElementById('receiptRemaining').innerText = remaining.toLocaleString() + ' د.ع';
+            document.getElementById('receiptDueDate').innerText = prop.dueDate || '—';
+            document.getElementById('receiptNotes').innerText = prop.notes || 'لا توجد ملاحظات';
+
+            printReceiptModal.style.display = 'flex';
+        };
+
+        window.closeReceiptModal = function() {
+            printReceiptModal.style.display = 'none';
+        };
+
+        editPropertyForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const propId = document.getElementById('editPropId').value;
+            const updatedData = {
+                propName: document.getElementById('editPropName').value.trim(),
+                location: document.getElementById('editPropLocation').value.trim(),
+                area: document.getElementById('editPropArea').value.trim(),
+                phone: document.getElementById('editPropPhone').value.trim(),
+                dueDate: document.getElementById('editDueDate').value,
+                amount: Number(document.getElementById('editPropAmount').value) || 0,
+                paidAmount: Number(document.getElementById('editPaidAmount').value) || 0,
+                notes: document.getElementById('editPropNotes').value.trim(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                await db.collection('properties').doc(propId).update(updatedData);
+                alert('تم تحديث بيانات العقار بنجاح!');
+                closeEditModal();
+            } catch (error) {
+                alert('فشل حفظ التعديل: ' + error.message);
+            }
+        });
+
+        window.quickRenewMonth = async function(propId) {
+            const prop = cachedProperties.find(p => p.id === propId);
+            if (!prop) return;
+
+            if (confirm(`هل ترغب في تسجيل سداد كامل لعقار (${prop.propName}) وتجديد تاريخ الاستحقاق شهراً للأمام؟`)) {
+                let nextDateStr = prop.dueDate;
+                if (prop.dueDate) {
+                    const d = new Date(prop.dueDate);
+                    d.setMonth(d.getMonth() + 1);
+                    nextDateStr = d.toISOString().split('T')[0];
+                }
+
+                try {
+                    await db.collection('properties').doc(propId).update({
+                        paidAmount: prop.amount,
+                        dueDate: nextDateStr,
+                        notes: `تم تجديد وسداد الإيجار بالكامل في: ${new Date().toLocaleDateString('ar-IQ')}`,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    alert('تم التجديد ونقل الاستحقاق للشهر القادم بنجاح!');
+                } catch (error) {
+                    alert('فشل التجديد: ' + error.message);
+                }
+            }
+        };
+
+        window.deleteProperty = async function(docId) {
+            if (confirm('هل أنت متأكد من حذف هذا العقار نهائياً؟')) {
+                try {
+                    await db.collection('properties').doc(docId).delete();
+                    alert('تم الحذف بنجاح.');
+                } catch (error) {
+                    alert('فشل الحذف: ' + error.message);
+                }
+            }
+        };
+
+        // التحقق الأمني عند التحميل
+        if (currentUser) {
+            checkAuth();
+        } else {
+            authSection.style.display = 'block';
+            appContent.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 14px;
